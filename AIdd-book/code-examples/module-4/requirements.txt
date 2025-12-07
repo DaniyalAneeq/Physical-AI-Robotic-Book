@@ -1,0 +1,6 @@
+rclpy
+openai
+opencv-python
+sounddevice
+numpy
+pytest

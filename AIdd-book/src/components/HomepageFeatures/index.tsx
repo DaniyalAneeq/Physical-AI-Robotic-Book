@@ -11,32 +11,35 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Comprehensive Introduction to AI in Robotics',
+    Svg: () => <img src="https://picsum.photos/200/200?random=1" alt="AI in Robotics" />,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Learn the fundamentals of AI and how it can be applied to robotics.
+        This book provides a comprehensive introduction to the field,
+        covering everything from basic concepts to advanced topics.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Hands-On Projects and Examples',
+    Svg: () => <img src="https://picsum.photos/200/200?random=2" alt="Hands-On Projects" />,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Get hands-on experience with AI in robotics through a variety of
+        projects and examples. This book includes detailed instructions and
+        code samples to help you build your own AI-powered robots.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Cutting-Edge Research and Techniques',
+    Svg: () => <img src="https://picsum.photos/200/200?random=3" alt="Cutting-Edge Research" />,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Explore the latest research and techniques in AI for robotics. This
+        book covers a wide range of topics, including machine learning,
+        computer vision, and natural language processing.
       </>
     ),
   },
@@ -45,12 +48,14 @@ const FeatureList: FeatureItem[] = [
 function Feature({title, Svg, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+      <div className={styles.featureCard}>
+        <div className="text--center">
+          <Svg className={styles.featureSvg} role="img" />
+        </div>
+        <div className="text--center padding-horiz--md">
+          <Heading as="h3">{title}</Heading>
+          <p>{description}</p>
+        </div>
       </div>
     </div>
   );
