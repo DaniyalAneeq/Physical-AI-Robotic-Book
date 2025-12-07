@@ -2,29 +2,27 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics',
   tagline: 'A Comprehensive Guide to Building Intelligent Robots',
   favicon: 'img/favicon.ico',
 
-  // Future flags (Migration to v4)
   future: {
     v4: true,
   },
 
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // ✔ FIXED FOR GITHUB PAGES
+  // GitHub Pages deployment URL
   url: 'https://daniyalaneeq.github.io',
+
+  // Required for GitHub Pages — MUST end with a slash
   baseUrl: '/Physical-AI-Robotic-Book/',
-  organizationName: 'daniyalaneeq',
+
+  // GitHub repo details
+  organizationName: 'DaniyalAneeq',
   projectName: 'Physical-AI-Robotic-Book',
-  deploymentBranch: 'gh-pages',
-  trailingSlash: false,
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
   onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
 
   i18n: {
     defaultLocale: 'en',
@@ -38,7 +36,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl:
-            'https://github.com/ai-driven-dev/AI-robotics-book/tree/main/AIdd-book/',
+            'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book/tree/main/AIdd-book/',
         },
         blog: {
           showReadingTime: true,
@@ -47,10 +45,7 @@ const config: Config = {
             xslt: true,
           },
           editUrl:
-            'https://github.com/ai-driven-dev/AI-robotics-book/tree/main/AIdd-book/',
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+            'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book/tree/main/AIdd-book/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -61,13 +56,15 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/docusaurus-social-card.jpg',
+
     colorMode: {
       respectPrefersColorScheme: true,
     },
+
     navbar: {
       title: 'Physical AI & Humanoid Robotics',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Site Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -77,14 +74,15 @@ const config: Config = {
           position: 'left',
           label: 'Book',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        { to: '/blog', label: 'Blog', position: 'left' },
         {
-          href: 'https://github.com/ai-driven-dev/AI-robotics-book',
+          href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
           label: 'GitHub',
           position: 'right',
         },
       ],
     },
+
     footer: {
       style: 'dark',
       links: [
@@ -92,7 +90,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Introduction',
               to: '/docs/intro',
             },
           ],
@@ -117,19 +115,17 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
+            { label: 'Blog', to: '/blog' },
             {
               label: 'GitHub',
-              href: 'https://github.com/ai-driven-dev/AI-robotics-book',
+              href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
             },
           ],
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} AI Driven Development. Built with Docusaurus.`,
     },
+
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,

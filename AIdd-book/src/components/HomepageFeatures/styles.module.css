@@ -3,9 +3,30 @@
   align-items: center;
   padding: 2rem 0;
   width: 100%;
+  background-color: #f9f9f9;
 }
 
 .featureSvg {
   height: 200px;
   width: 200px;
+  border-radius: 50%;
+  border: 5px solid white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.featureSvg:hover {
+  transform: scale(1.05);
+}
+
+.featureCard {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.featureCard:hover {
+  transform: translateY(-10px);
 }
