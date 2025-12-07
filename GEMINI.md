@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - Python 3.10+, C# (for Unity), Docusaurus + ROS 2 Humble/Iron, Gazebo Fortress/Ignition, Unity Robotics Hub, rclpy, SDF, URDF (003-digital-twin-module)
 - Local filesystem for Docusaurus markdown files, code examples, and assets. (003-digital-twin-module)
+- Python 3.10+ + `rclpy` (ROS 2 Humble/Iron), OpenAI Whisper, LLM APIs (e.g., GPT-4, Claude 3), OpenCV, Gazebo Fortress/Ignition or NVIDIA Isaac Sim (004-vla-module)
+- N/A (Code and documentation are stored in files) (004-vla-module)
 
 ## Recent Changes
 - 003-digital-twin-module: Added Python 3.10+, C# (for Unity), Docusaurus + ROS 2 Humble/Iron, Gazebo Fortress/Ignition, Unity Robotics Hub, rclpy, SDF, URDF
