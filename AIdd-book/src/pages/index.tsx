@@ -16,12 +16,17 @@ function HomepageHeader() {
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className="hero__subtitle">An Open-Source Textbook on AI-Driven Development in Robotics</p>
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            View Chapters
+          </Link>
+          <Link
+            className="button button--secondary button--lg"
+            to="https://github.com/your-org/your-repo">
+            View on Github
           </Link>
         </div>
       </div>
@@ -33,8 +38,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`AI-Driven Development in Robotics`}
+      description="An Open-Source Textbook on AI-Driven Development in Robotics">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

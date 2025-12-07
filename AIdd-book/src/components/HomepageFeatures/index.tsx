@@ -11,32 +11,35 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Comprehensive Introduction to AI in Robotics',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Learn the fundamentals of AI and how it can be applied to robotics.
+        This book provides a comprehensive introduction to the field,
+        covering everything from basic concepts to advanced topics.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Hands-On Projects and Examples',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Get hands-on experience with AI in robotics through a variety of
+        projects and examples. This book includes detailed instructions and
+        code samples to help you build your own AI-powered robots.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Cutting-Edge Research and Techniques',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Explore the latest research and techniques in AI for robotics. This
+        book covers a wide range of topics, including machine learning,
+        computer vision, and natural language processing.
       </>
     ),
   },
