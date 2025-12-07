@@ -1,0 +1,54 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="500" fill="#f0f2f5"/>
+
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial, sans-serif" font-size="24" fill="#333" text-anchor="middle">ROS 2 Architecture Overview</text>
+
+  <!-- ROS 2 Daemon (RMW & DDS) -->
+  <rect x="100" y="100" width="200" height="300" rx="15" ry="15" fill="#e0e8f0" stroke="#aabccd" stroke-width="2"/>
+  <text x="200" y="125" font-family="Arial, sans-serif" font-size="18" fill="#333" text-anchor="middle">ROS 2 Daemon</text>
+  <text x="200" y="150" font-family="Arial, sans-serif" font-size="14" fill="#666" text-anchor="middle">(RMW & DDS)</text>
+
+  <!-- Rclpy Client Library -->
+  <rect x="350" y="100" width="100" height="80" rx="10" ry="10" fill="#d4edda" stroke="#7bc079" stroke-width="2"/>
+  <text x="400" y="135" font-family="Arial, sans-serif" font-size="14" fill="#333" text-anchor="middle">Rclpy</text>
+
+  <!-- Application Layer (Nodes) -->
+  <rect x="500" y="100" width="250" height="300" rx="15" ry="15" fill="#fff" stroke="#ccc" stroke-width="2"/>
+  <text x="625" y="125" font-family="Arial, sans-serif" font-size="18" fill="#333" text-anchor="middle">Application Layer (Nodes)</text>
+
+  <!-- Publisher Node -->
+  <rect x="520" y="160" width="210" height="60" rx="8" ry="8" fill="#a8dadc" stroke="#457b9d" stroke-width="1"/>
+  <text x="625" y="195" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">Publisher Node</text>
+
+  <!-- Subscriber Node -->
+  <rect x="520" y="240" width="210" height="60" rx="8" ry="8" fill="#a8dadc" stroke="#457b9d" stroke-width="1"/>
+  <text x="625" y="275" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">Subscriber Node</text>
+
+  <!-- Service Server Node -->
+  <rect x="520" y="320" width="210" height="60" rx="8" ry="8" fill="#a8dadc" stroke="#457b9d" stroke-width="1"/>
+  <text x="625" y="355" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">Service Server Node</text>
+
+  <!-- Arrows: Rclpy to Nodes -->
+  <line x1="450" y1="140" x2="500" y2="190" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="450" y1="140" x2="500" y2="270" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="450" y1="140" x2="500" y2="350" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrows: Rclpy to ROS 2 Daemon -->
+  <line x1="350" y1="140" x2="300" y2="190" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="350" y1="140" x2="300" y2="270" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="350" y1="140" x2="300" y2="350" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrows: DDS to Rclpy -->
+  <line x1="300" y1="200" x2="350" y2="150" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="300" y1="280" x2="350" y2="150" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="300" y1="360" x2="350" y2="150" stroke="#666" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- Marker for arrows -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+    </marker>
+  </defs>
+</svg>

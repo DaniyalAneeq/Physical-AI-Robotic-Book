@@ -1,0 +1,8 @@
+{
+  "label": "Module 2: Embodied AI with Advanced Simulations",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Explore different robotics simulation platforms (Unity, Isaac Sim), integrates ROS 2, and understands trade-offs."
+  }
+}
