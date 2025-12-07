@@ -12,7 +12,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Comprehensive Introduction to AI in Robotics',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: () => <img src="https://picsum.photos/200/200?random=1" alt="AI in Robotics" />,
     description: (
       <>
         Learn the fundamentals of AI and how it can be applied to robotics.
@@ -23,7 +23,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Hands-On Projects and Examples',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: () => <img src="https://picsum.photos/200/200?random=2" alt="Hands-On Projects" />,
     description: (
       <>
         Get hands-on experience with AI in robotics through a variety of
@@ -34,7 +34,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Cutting-Edge Research and Techniques',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: () => <img src="https://picsum.photos/200/200?random=3" alt="Cutting-Edge Research" />,
     description: (
       <>
         Explore the latest research and techniques in AI for robotics. This
@@ -48,12 +48,14 @@ const FeatureList: FeatureItem[] = [
 function Feature({title, Svg, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+      <div className={styles.featureCard}>
+        <div className="text--center">
+          <Svg className={styles.featureSvg} role="img" />
+        </div>
+        <div className="text--center padding-horiz--md">
+          <Heading as="h3">{title}</Heading>
+          <p>{description}</p>
+        </div>
       </div>
     </div>
   );

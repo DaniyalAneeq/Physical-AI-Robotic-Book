@@ -13,13 +13,13 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <Heading as="h1" className="hero__title">
+        <Heading as="h1" className="hero__title" style={{fontSize: '4rem', color: 'white', zIndex: 1}}>
           {siteConfig.title}
         </Heading>
-        <p className="hero__subtitle">An Open-Source Textbook on AI-Driven Development in Robotics</p>
+        <p className="hero__subtitle" style={{fontSize: '1.5rem', color: 'white', zIndex: 1, margin: '2rem 0'}}>An Open-Source Textbook on AI-Driven Development in Robotics</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
+            className="button button--primary button--lg"
             to="/docs/intro">
             View Chapters
           </Link>
@@ -34,6 +34,8 @@ function HomepageHeader() {
   );
 }
 
+import CallToAction from '@site/src/components/CallToAction';
+
 export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
@@ -43,6 +45,7 @@ export default function Home(): ReactNode {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <CallToAction />
       </main>
     </Layout>
   );
