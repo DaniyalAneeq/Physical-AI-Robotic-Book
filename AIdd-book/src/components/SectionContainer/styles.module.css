@@ -1,0 +1,144 @@
+/**
+ * SectionContainer Styles
+ * Background variants and responsive padding for page sections.
+ */
+
+/* Base section styling */
+.section {
+  width: 100%;
+  position: relative;
+}
+
+/* Container for content width control */
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--token-spacing-md);
+  padding-right: var(--token-spacing-md);
+}
+
+/* ========================================
+ * BACKGROUND VARIANTS
+ * ======================================== */
+
+.bg-default {
+  background-color: var(--token-color-background);
+}
+
+.bg-muted {
+  background-color: var(--token-color-background-secondary);
+}
+
+.bg-primary {
+  background-color: var(--token-color-primary);
+  color: #ffffff;
+}
+
+.bg-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--token-color-primary) 0%,
+    var(--token-color-primary-dark) 50%,
+    var(--token-color-primary-darkest) 100%
+  );
+  color: #ffffff;
+}
+
+.bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.bg-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+
+.bg-image > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================================
+ * PADDING VARIANTS
+ * ======================================== */
+
+.padding-sm {
+  padding-top: var(--token-spacing-2xl);
+  padding-bottom: var(--token-spacing-2xl);
+}
+
+.padding-md {
+  padding-top: var(--token-spacing-3xl);
+  padding-bottom: var(--token-spacing-3xl);
+}
+
+.padding-lg {
+  padding-top: var(--token-spacing-4xl);
+  padding-bottom: var(--token-spacing-4xl);
+}
+
+.padding-xl {
+  padding-top: calc(var(--token-spacing-4xl) * 1.5);
+  padding-bottom: calc(var(--token-spacing-4xl) * 1.5);
+}
+
+/* ========================================
+ * MAX WIDTH VARIANTS
+ * ======================================== */
+
+.maxWidth-sm {
+  max-width: var(--token-max-width-sm);
+}
+
+.maxWidth-md {
+  max-width: var(--token-max-width-md);
+}
+
+.maxWidth-lg {
+  max-width: var(--token-max-width-lg);
+}
+
+.maxWidth-xl {
+  max-width: var(--token-max-width-xl);
+}
+
+.maxWidth-full {
+  max-width: var(--token-max-width-2xl);
+}
+
+/* ========================================
+ * RESPONSIVE ADJUSTMENTS
+ * ======================================== */
+
+@media (max-width: 768px) {
+  .padding-sm {
+    padding-top: var(--token-spacing-xl);
+    padding-bottom: var(--token-spacing-xl);
+  }
+
+  .padding-md {
+    padding-top: var(--token-spacing-2xl);
+    padding-bottom: var(--token-spacing-2xl);
+  }
+
+  .padding-lg {
+    padding-top: var(--token-spacing-3xl);
+    padding-bottom: var(--token-spacing-3xl);
+  }
+
+  .padding-xl {
+    padding-top: var(--token-spacing-4xl);
+    padding-bottom: var(--token-spacing-4xl);
+  }
+
+  .container {
+    padding-left: var(--token-spacing-sm);
+    padding-right: var(--token-spacing-sm);
+  }
+}

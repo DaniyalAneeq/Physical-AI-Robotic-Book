@@ -1,14 +1,153 @@
+/**
+ * CallToAction Styles (Glassmorphic Version)
+ * Modern CTA section with a frosted-glass design.
+ */
+
 .callToAction {
-  padding: 4rem 0;
-  background-color: #f9f9f9;
+  padding: var(--token-spacing-4xl) var(--token-spacing-md);
+  background: rgba(255, 255, 255, 0.06); /* translucent layer */
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  max-width: var(--token-max-width-lg);
+  margin: 0 auto;
 }
 
 .title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: var(--token-font-size-4xl);
+  font-weight: var(--token-font-weight-bold);
+  color: #ffffff;
+  margin-bottom: var(--token-spacing-md);
+  line-height: var(--token-line-height-tight);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
 .subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
+  font-size: var(--token-font-size-lg);
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: var(--token-spacing-xl);
+  line-height: var(--token-line-height-relaxed);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--token-spacing-md);
+  justify-content: center;
+}
+
+/* Glassmorphic Buttons */
+.primaryButton {
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  font-weight: var(--token-font-weight-semibold);
+  padding: var(--token-spacing-sm) var(--token-spacing-xl);
+  backdrop-filter: blur(10px);
+  transition: all var(--token-duration-fast) var(--token-easing-out);
+  border-radius: 12px;
+}
+
+.primaryButton:hover {
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--token-color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-weight: var(--token-font-weight-semibold);
+  padding: var(--token-spacing-sm) var(--token-spacing-xl);
+  backdrop-filter: blur(10px);
+  transition: all var(--token-duration-fast) var(--token-easing-out);
+  border-radius: 12px;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Animations */
+@media (prefers-reduced-motion: no-preference) {
+  .title {
+    animation: fadeInUp 0.5s var(--token-easing-out) forwards;
+    opacity: 0;
+  }
+
+  .subtitle {
+    animation: fadeInUp 0.5s var(--token-easing-out) 0.1s forwards;
+    opacity: 0;
+  }
+
+  .actions {
+    animation: fadeInUp 0.5s var(--token-easing-out) 0.2s forwards;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+ * RESPONSIVE STYLES
+ * ======================================== */
+
+@media (max-width: 996px) {
+  .callToAction {
+    padding: var(--token-spacing-3xl) var(--token-spacing-md);
+  }
+
+  .title {
+    font-size: var(--token-font-size-3xl);
+  }
+
+  .subtitle {
+    font-size: var(--token-font-size-base);
+  }
+}
+
+@media (max-width: 768px) {
+  .callToAction {
+    padding: var(--token-spacing-2xl) var(--token-spacing-sm);
+  }
+
+  .title {
+    font-size: var(--token-font-size-2xl);
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
 }

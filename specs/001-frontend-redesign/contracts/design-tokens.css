@@ -1,0 +1,177 @@
+/**
+ * Design Token Contract
+ * Feature: 001-frontend-redesign
+ *
+ * This file defines the CSS custom property interface that components
+ * depend on. Changes to this contract require updating all consumers.
+ */
+
+:root {
+  /* ========================================
+   * COLOR TOKENS
+   * ======================================== */
+
+  /* Primary Palette */
+  --token-color-primary: #2563eb;
+  --token-color-primary-dark: #1d4ed8;
+  --token-color-primary-darker: #1e40af;
+  --token-color-primary-darkest: #1e3a8a;
+  --token-color-primary-light: #3b82f6;
+  --token-color-primary-lighter: #60a5fa;
+  --token-color-primary-lightest: #93c5fd;
+
+  /* Semantic Colors */
+  --token-color-success: #10b981;
+  --token-color-warning: #f59e0b;
+  --token-color-danger: #ef4444;
+  --token-color-info: #3b82f6;
+
+  /* Background & Surface (Light Theme) */
+  --token-color-background: #ffffff;
+  --token-color-background-secondary: #f8fafc;
+  --token-color-surface: #ffffff;
+  --token-color-surface-elevated: #ffffff;
+
+  /* Text (Light Theme) */
+  --token-color-text: #1e293b;
+  --token-color-text-secondary: #475569;
+  --token-color-text-muted: #94a3b8;
+
+  /* Border */
+  --token-color-border: #e2e8f0;
+  --token-color-border-hover: #cbd5e1;
+
+  /* ========================================
+   * SPACING TOKENS
+   * ======================================== */
+
+  --token-spacing-base: 4px;
+  --token-spacing-xs: 4px;
+  --token-spacing-sm: 8px;
+  --token-spacing-md: 16px;
+  --token-spacing-lg: 24px;
+  --token-spacing-xl: 32px;
+  --token-spacing-2xl: 48px;
+  --token-spacing-3xl: 64px;
+  --token-spacing-4xl: 96px;
+
+  /* ========================================
+   * TYPOGRAPHY TOKENS
+   * ======================================== */
+
+  /* Font Families */
+  --token-font-family-base: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --token-font-family-heading: var(--token-font-family-base);
+  --token-font-family-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Font Sizes */
+  --token-font-size-xs: 0.75rem;    /* 12px */
+  --token-font-size-sm: 0.875rem;   /* 14px */
+  --token-font-size-base: 1rem;     /* 16px */
+  --token-font-size-lg: 1.125rem;   /* 18px */
+  --token-font-size-xl: 1.25rem;    /* 20px */
+  --token-font-size-2xl: 1.5rem;    /* 24px */
+  --token-font-size-3xl: 1.875rem;  /* 30px */
+  --token-font-size-4xl: 2.25rem;   /* 36px */
+  --token-font-size-5xl: 3rem;      /* 48px */
+
+  /* Font Weights */
+  --token-font-weight-normal: 400;
+  --token-font-weight-medium: 500;
+  --token-font-weight-semibold: 600;
+  --token-font-weight-bold: 700;
+
+  /* Line Heights */
+  --token-line-height-tight: 1.25;
+  --token-line-height-normal: 1.5;
+  --token-line-height-relaxed: 1.75;
+
+  /* ========================================
+   * ANIMATION TOKENS
+   * ======================================== */
+
+  /* Durations */
+  --token-duration-fast: 150ms;
+  --token-duration-normal: 200ms;
+  --token-duration-slow: 300ms;
+  --token-duration-slower: 500ms;
+
+  /* Easing Functions */
+  --token-easing-default: ease-in-out;
+  --token-easing-in: ease-in;
+  --token-easing-out: ease-out;
+  --token-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* ========================================
+   * SHADOW TOKENS
+   * ======================================== */
+
+  --token-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --token-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --token-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --token-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* ========================================
+   * BORDER RADIUS TOKENS
+   * ======================================== */
+
+  --token-radius-none: 0;
+  --token-radius-sm: 4px;
+  --token-radius-md: 8px;
+  --token-radius-lg: 12px;
+  --token-radius-xl: 16px;
+  --token-radius-full: 9999px;
+
+  /* ========================================
+   * LAYOUT TOKENS
+   * ======================================== */
+
+  --token-max-width-sm: 640px;
+  --token-max-width-md: 768px;
+  --token-max-width-lg: 1024px;
+  --token-max-width-xl: 1280px;
+  --token-max-width-2xl: 1440px;
+
+  /* ========================================
+   * Z-INDEX TOKENS
+   * ======================================== */
+
+  --token-z-dropdown: 1000;
+  --token-z-sticky: 1020;
+  --token-z-fixed: 1030;
+  --token-z-modal-backdrop: 1040;
+  --token-z-modal: 1050;
+  --token-z-tooltip: 1060;
+}
+
+/* ========================================
+ * DARK THEME OVERRIDES
+ * ======================================== */
+
+[data-theme='dark'] {
+  /* Background & Surface */
+  --token-color-background: #0f172a;
+  --token-color-background-secondary: #1e293b;
+  --token-color-surface: #1e293b;
+  --token-color-surface-elevated: #334155;
+
+  /* Text */
+  --token-color-text: #f1f5f9;
+  --token-color-text-secondary: #cbd5e1;
+  --token-color-text-muted: #64748b;
+
+  /* Border */
+  --token-color-border: #334155;
+  --token-color-border-hover: #475569;
+
+  /* Primary adjustments for dark mode */
+  --token-color-primary: #3b82f6;
+  --token-color-primary-light: #60a5fa;
+  --token-color-primary-lighter: #93c5fd;
+
+  /* Shadows adjusted for dark backgrounds */
+  --token-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --token-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --token-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --token-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}

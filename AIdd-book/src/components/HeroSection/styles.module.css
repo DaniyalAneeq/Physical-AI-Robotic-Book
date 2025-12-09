@@ -1,0 +1,272 @@
+/**
+ * HeroSection Styles
+ * Modern hero section with video/gradient background and animations.
+ */
+
+/* Base hero styling */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--token-color-primary) 0%,
+    var(--token-color-primary-dark) 50%,
+    var(--token-color-primary-darkest) 100%
+  );
+  background-size: 200% 200%;
+  /* Pull hero up under the navbar */
+  margin-top: calc(-1 * var(--ifm-navbar-height, 60px));
+  padding-top: var(--ifm-navbar-height, 60px);
+}
+
+/* Gradient animation for default hero */
+@media (prefers-reduced-motion: no-preference) {
+  .hero:not(.hasVideo) {
+    animation: gradientShift 15s ease infinite;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Background image hero */
+.hasImage {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Video background hero */
+.hasVideo {
+  background: #000000;
+}
+
+/* Video wrapper - full coverage */
+.videoWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  background: #000000;
+}
+
+/* Video element - cover entire hero */
+.videoBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark overlay for readability */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+/* Overlay variant for image backgrounds */
+.hasImage .overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 58, 138, 0.85) 0%,
+    rgba(37, 99, 235, 0.75) 50%,
+    rgba(30, 64, 175, 0.85) 100%
+  );
+}
+
+/* Content container */
+.container {
+  max-width: var(--token-max-width-xl);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--token-spacing-md);
+  position: relative;
+  z-index: 10;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--token-spacing-lg);
+}
+
+/* Alignment variants */
+.align-left .content {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.align-center .content {
+  align-items: center;
+  text-align: center;
+}
+
+.align-right .content {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Title styling */
+.title {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: var(--token-font-weight-bold);
+  color: #ffffff;
+  line-height: 1.1;
+  margin: 0;
+  max-width: 900px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Animation for title */
+@media (prefers-reduced-motion: no-preference) {
+  .title {
+    animation: fadeInUp 0.6s var(--token-easing-out) forwards;
+    opacity: 0;
+  }
+}
+
+/* Subtitle styling */
+.subtitle {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: var(--token-font-weight-normal);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: var(--token-line-height-relaxed);
+  margin: 0;
+  max-width: 700px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .subtitle {
+    animation: fadeInUp 0.6s var(--token-easing-out) 0.1s forwards;
+    opacity: 0;
+  }
+}
+
+/* Actions container */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--token-spacing-md);
+  margin-top: var(--token-spacing-lg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .actions {
+    animation: fadeInUp 0.6s var(--token-easing-out) 0.2s forwards;
+    opacity: 0;
+  }
+}
+
+/* Primary button styling */
+.primaryButton {
+  background-color: #ffffff;
+  color: var(--token-color-primary-dark, #1e3a8a);
+  border: 2px solid #ffffff;
+  font-weight: var(--token-font-weight-semibold);
+  padding: var(--token-spacing-sm) var(--token-spacing-xl);
+  transition: all var(--token-duration-fast) var(--token-easing-out);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.primaryButton:hover {
+  background-color: transparent;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Secondary button styling */
+.secondaryButton {
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  font-weight: var(--token-font-weight-semibold);
+  padding: var(--token-spacing-sm) var(--token-spacing-xl);
+  transition: all var(--token-duration-fast) var(--token-easing-out);
+}
+
+.secondaryButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* Fade in up animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+ * RESPONSIVE STYLES
+ * ======================================== */
+
+@media (max-width: 996px) {
+  .hero {
+    min-height: 100vh;
+  }
+
+  .title {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+  }
+
+  .subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 100vh;
+    padding-left: var(--token-spacing-sm);
+    padding-right: var(--token-spacing-sm);
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}

@@ -1,32 +1,163 @@
+/**
+ * HomepageFeatures Styles
+ * Modern feature cards with design token integration.
+ */
+
 .features {
   display: flex;
-  align-items: center;
-  padding: 2rem 0;
+  align-items: stretch;
+  padding: var(--token-spacing-4xl) 0;
   width: 100%;
-  background-color: #f9f9f9;
-}
-
-.featureSvg {
-  height: 200px;
-  width: 200px;
-  border-radius: 50%;
-  border: 5px solid white;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease-in-out;
-}
-
-.featureSvg:hover {
-  transform: scale(1.05);
+  background-color: var(--token-color-background-secondary);
 }
 
 .featureCard {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease-in-out;
+  background-color: var(--token-color-surface);
+  padding: var(--token-spacing-xl);
+  border-radius: var(--token-radius-lg);
+  box-shadow: var(--token-shadow-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid var(--token-color-border);
+  transition: transform var(--token-duration-normal) var(--token-easing-out),
+              box-shadow var(--token-duration-normal) var(--token-easing-out);
 }
 
-.featureCard:hover {
-  transform: translateY(-10px);
+@media (prefers-reduced-motion: no-preference) {
+  .featureCard:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--token-shadow-xl);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featureCard:hover {
+    box-shadow: var(--token-shadow-xl);
+  }
+}
+
+.featureIcon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: var(--token-spacing-lg);
+  color: var(--token-color-primary);
+}
+
+.featureImage {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--token-radius-full);
+  object-fit: cover;
+  margin-bottom: var(--token-spacing-lg);
+  border: 4px solid var(--token-color-surface);
+  box-shadow: var(--token-shadow-md);
+  transition: transform var(--token-duration-normal) var(--token-easing-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .featureCard:hover .featureImage {
+    transform: scale(1.05);
+  }
+}
+
+.featureTitle {
+  font-size: var(--token-font-size-xl);
+  font-weight: var(--token-font-weight-semibold);
+  color: var(--token-color-text);
+  margin-bottom: var(--token-spacing-sm);
+  line-height: var(--token-line-height-tight);
+}
+
+.featureDescription {
+  font-size: var(--token-font-size-base);
+  color: var(--token-color-text-secondary);
+  line-height: var(--token-line-height-relaxed);
+  flex-grow: 1;
+}
+
+/* Row layout for feature cards */
+.featuresRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--token-spacing-lg);
+  justify-content: center;
+}
+
+.featureColumn {
+  flex: 0 0 calc(33.333% - var(--token-spacing-lg));
+  max-width: calc(33.333% - var(--token-spacing-lg));
+}
+
+/* Animation delays for staggered entrance */
+@media (prefers-reduced-motion: no-preference) {
+  .featureCard {
+    opacity: 0;
+    animation: fadeInUp 0.5s var(--token-easing-out) forwards;
+  }
+
+  .featureColumn:nth-child(1) .featureCard {
+    animation-delay: 0.1s;
+  }
+
+  .featureColumn:nth-child(2) .featureCard {
+    animation-delay: 0.2s;
+  }
+
+  .featureColumn:nth-child(3) .featureCard {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+ * RESPONSIVE STYLES
+ * ======================================== */
+
+@media (max-width: 996px) {
+  .features {
+    padding: var(--token-spacing-3xl) var(--token-spacing-md);
+  }
+
+  .featureColumn {
+    flex: 0 0 calc(50% - var(--token-spacing-md));
+    max-width: calc(50% - var(--token-spacing-md));
+  }
+}
+
+@media (max-width: 768px) {
+  .features {
+    padding: var(--token-spacing-2xl) var(--token-spacing-sm);
+  }
+
+  .featureColumn {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .featureCard {
+    padding: var(--token-spacing-lg);
+  }
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .featureCard {
+  background-color: var(--token-color-surface);
+  border-color: var(--token-color-border);
+}
+
+[data-theme='dark'] .featureImage {
+  border-color: var(--token-color-surface-elevated);
 }
