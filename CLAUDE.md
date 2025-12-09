@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - Python 3.x (latest stable recommended), C# (for Unity), Docusaurus (latest stable) + ROS 2 Foxy/Humble, Gazebo, Unity Robotics SDK, NVIDIA Isaac Sim, `rclpy`, URDF, Gazebo SDF, Unity C#, Isaac Sim API (Omniverse Kit/Python API), OpenCV, NLP libraries (e.g., spaCy, NLTK), LLM APIs (002-ai-robotics-textbook)
 - Local filesystem for Docusaurus markdown files, code examples, and assets. (002-ai-robotics-textbook)
+- TypeScript 5.6.2 (React 19.0.0) + Docusaurus 3.9.2, Infima CSS Framework, clsx (001-frontend-redesign)
+- N/A (static site) (001-frontend-redesign)
 
 ## Recent Changes
 - 002-ai-robotics-textbook: Added Python 3.x (latest stable recommended), C# (for Unity), Docusaurus (latest stable) + ROS 2 Foxy/Humble, Gazebo, Unity Robotics SDK, NVIDIA Isaac Sim, `rclpy`, URDF, Gazebo SDF, Unity C#, Isaac Sim API (Omniverse Kit/Python API), OpenCV, NLP libraries (e.g., spaCy, NLTK), LLM APIs

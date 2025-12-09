@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="robotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Book base -->
+  <rect x="8" y="12" width="48" height="44" rx="4" ry="4" fill="url(#bookGradient)"/>
+  <!-- Book spine -->
+  <rect x="8" y="12" width="8" height="44" rx="2" ry="2" fill="#1e40af"/>
+  <!-- Book pages -->
+  <rect x="18" y="16" width="34" height="36" rx="2" ry="2" fill="#ffffff"/>
+  <!-- Robot head -->
+  <rect x="24" y="22" width="22" height="18" rx="4" ry="4" fill="url(#robotGradient)"/>
+  <!-- Robot eyes -->
+  <circle cx="30" cy="30" r="3" fill="#ffffff"/>
+  <circle cx="40" cy="30" r="3" fill="#ffffff"/>
+  <circle cx="30" cy="30" r="1.5" fill="#1e3a8a"/>
+  <circle cx="40" cy="30" r="1.5" fill="#1e3a8a"/>
+  <!-- Robot antenna -->
+  <line x1="35" y1="22" x2="35" y2="17" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="35" cy="15" r="2" fill="#60a5fa"/>
+  <!-- AI circuit lines on book -->
+  <path d="M22 46 L28 46 L32 42 L38 42 L42 46 L48 46" stroke="#3b82f6" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <circle cx="22" cy="46" r="1.5" fill="#3b82f6"/>
+  <circle cx="48" cy="46" r="1.5" fill="#3b82f6"/>
+</svg>

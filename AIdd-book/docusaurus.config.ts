@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Physical AI & Humanoid Robotics',
   tagline: 'A Comprehensive Guide to Building Intelligent Robots',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   future: {
     v4: true,
@@ -64,9 +64,13 @@ const config: Config = {
     navbar: {
       title: 'Physical AI & Humanoid Robotics',
       logo: {
-        alt: 'Site Logo',
-        src: 'img/logo.svg',
+        alt: 'Physical AI & Humanoid Robotics Logo',
+        src: 'img/book-logo-optimized.svg',
+        srcDark: 'img/book-logo-optimized.svg',
+        width: 32,
+        height: 32,
       },
+      hideOnScroll: false,
       items: [
         {
           type: 'docSidebar',
@@ -87,11 +91,44 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Learn',
           items: [
             {
               label: 'Introduction',
               to: '/docs/intro',
+            },
+            {
+              label: 'Module 1: ROS 2 Fundamentals',
+              to: '/docs/module1/chapter1',
+            },
+            {
+              label: 'Module 2: Digital Twins',
+              to: '/docs/module2/chapter1-intro-digital-twins',
+            },
+            {
+              label: 'Module 3: Isaac Sim',
+              to: '/docs/category/module-3-the-ai-robot-brain-nvidia-isaac',
+            },
+            {
+              label: 'Module 4: VLA',
+              to: '/docs/category/module-4-vision-language-action-vla',
+            },
+          ],
+        },
+        {
+          title: 'Resources',
+          items: [
+            {
+              label: 'Glossary',
+              to: '/docs/glossary',
+            },
+            {
+              label: 'Notation Guide',
+              to: '/docs/notation',
+            },
+            {
+              label: 'Blog',
+              to: '/blog',
             },
           ],
         },
@@ -99,26 +136,29 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'GitHub',
+              href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'ROS 2 Documentation',
+              href: 'https://docs.ros.org/en/humble/',
             },
             {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'NVIDIA Isaac Sim',
+              href: 'https://developer.nvidia.com/isaac-sim',
             },
           ],
         },
         {
-          title: 'More',
+          title: 'About',
           items: [
-            { label: 'Blog', to: '/blog' },
             {
-              label: 'GitHub',
-              href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
+              label: 'AI Driven Development',
+              href: 'https://github.com/DaniyalAneeq',
+            },
+            {
+              label: 'Contribute',
+              href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book/blob/main/CONTRIBUTING.md',
             },
           ],
         },

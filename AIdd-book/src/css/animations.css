@@ -1,0 +1,254 @@
+/**
+ * Animation Utilities
+ * Modern Frontend Redesign - Physical AI & Humanoid Robotics
+ *
+ * This file contains all animation keyframes and utility classes.
+ * All animations respect prefers-reduced-motion for accessibility.
+ */
+
+/* ========================================
+ * KEYFRAME DEFINITIONS
+ * ======================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Subtle gradient animation for hero backgrounds */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ========================================
+ * ANIMATION UTILITY CLASSES
+ * Only apply when user has not requested reduced motion
+ * ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fadeIn {
+    animation: fadeIn var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-fadeInDown {
+    animation: fadeInDown var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-slideUp {
+    animation: slideUp var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-slideInLeft {
+    animation: slideInLeft var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-slideInRight {
+    animation: slideInRight var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn var(--token-duration-slow) var(--token-easing-out) forwards;
+  }
+
+  .animate-pulse {
+    animation: pulse 2s var(--token-easing-default) infinite;
+  }
+
+  /* Staggered animation delays */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+
+  /* Transition utilities */
+  .transition-all {
+    transition: all var(--token-duration-normal) var(--token-easing-default);
+  }
+
+  .transition-colors {
+    transition: color var(--token-duration-fast) var(--token-easing-default),
+                background-color var(--token-duration-fast) var(--token-easing-default),
+                border-color var(--token-duration-fast) var(--token-easing-default);
+  }
+
+  .transition-transform {
+    transition: transform var(--token-duration-normal) var(--token-easing-default);
+  }
+
+  .transition-opacity {
+    transition: opacity var(--token-duration-normal) var(--token-easing-default);
+  }
+
+  .transition-shadow {
+    transition: box-shadow var(--token-duration-normal) var(--token-easing-default);
+  }
+
+  /* Hover transforms */
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+  }
+}
+
+/* ========================================
+ * REDUCED MOTION FALLBACKS
+ * Provide instant state changes for users who prefer reduced motion
+ * ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-fadeIn,
+  .animate-fadeInUp,
+  .animate-fadeInDown,
+  .animate-slideUp,
+  .animate-slideInLeft,
+  .animate-slideInRight,
+  .animate-scaleIn {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ========================================
+ * SKELETON LOADING ANIMATION
+ * ======================================== */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--token-color-background-secondary) 25%,
+    var(--token-color-surface) 50%,
+    var(--token-color-background-secondary) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--token-radius-md);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    animation: shimmer 1.5s infinite;
+  }
+}
