@@ -11,6 +11,14 @@ const config: Config = {
     v4: true,
   },
 
+  // Custom fields for chatbot configuration
+  customFields: {
+    chatbot: {
+      apiUrl: process.env.CHATBOT_API_URL || 'http://localhost:8000',
+      enabled: process.env.CHATBOT_ENABLED !== 'false',
+    },
+  },
+
   // GitHub Pages deployment URL
   url: 'https://daniyalaneeq.github.io',
 

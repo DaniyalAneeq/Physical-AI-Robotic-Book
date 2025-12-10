@@ -1,0 +1,101 @@
+/* Chatbot Toggle Button */
+.toggleButton {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggleButton:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toggleButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.toggleButton:focus {
+  outline: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 0 4px var(--ifm-color-primary-lightest);
+}
+
+.toggleButton.open {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+}
+
+.toggleButton svg {
+  transition: transform 0.3s ease;
+}
+
+.toggleButton.open svg {
+  transform: rotate(90deg);
+}
+
+/* Pulse animation for attention */
+.toggleButton::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ifm-color-primary);
+  animation: pulse 2s ease-in-out infinite;
+  z-index: -1;
+  opacity: 0;
+}
+
+.toggleButton:not(.open)::before {
+  opacity: 1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toggleButton {
+    bottom: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  .toggleButton.open {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .toggleButton {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .toggleButton:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 6px 12px rgba(0, 0, 0, 0.3);
+}
