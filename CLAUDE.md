@@ -214,6 +214,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 - Local filesystem for Docusaurus markdown files, code examples, and assets. (002-ai-robotics-textbook)
 - TypeScript 5.6.2 (React 19.0.0) + Docusaurus 3.9.2, Infima CSS Framework, clsx (001-frontend-redesign)
 - N/A (static site) (001-frontend-redesign)
+- Python 3.11+ (backend), TypeScript 5.x (frontend) + OpenAI ChatKit SDK, FastAPI 0.115+, Qdrant Client 1.10+, psycopg3 (003-rag-chatbot)
+- Qdrant Cloud (vectors), Neon Serverless Postgres (sessions) (003-rag-chatbot)
 
 ## Recent Changes
 - 002-ai-robotics-textbook: Added Python 3.x (latest stable recommended), C# (for Unity), Docusaurus (latest stable) + ROS 2 Foxy/Humble, Gazebo, Unity Robotics SDK, NVIDIA Isaac Sim, `rclpy`, URDF, Gazebo SDF, Unity C#, Isaac Sim API (Omniverse Kit/Python API), OpenCV, NLP libraries (e.g., spaCy, NLTK), LLM APIs

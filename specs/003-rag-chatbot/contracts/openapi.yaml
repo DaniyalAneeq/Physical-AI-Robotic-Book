@@ -1,0 +1,366 @@
+openapi: 3.1.0
+info:
+  title: RAG Chatbot API
+  description: API for the Integrated RAG Chatbot embedded in the Physical AI Humanoid Robotics textbook
+  version: 1.0.0
+  contact:
+    name: AIDD Textbook Team
+
+servers:
+  - url: https://api.example.com
+    description: Production server
+  - url: http://localhost:8000
+    description: Local development
+
+paths:
+  /api/chat:
+    post:
+      summary: Process a chat query
+      description: |
+        Accepts a user question with optional scope constraints, retrieves relevant
+        textbook content, and streams a response with citations via SSE.
+      operationId: processChat
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              pageScope:
+                summary: Query scoped to current page
+                value:
+                  session_id: "550e8400-e29b-41d4-a716-446655440000"
+                  query: "How do I configure the navigation stack?"
+                  scope:
+                    type: "page"
+                    chapter_id: "chapter-3"
+              selectionScope:
+                summary: Query about selected text
+                value:
+                  session_id: "550e8400-e29b-41d4-a716-446655440000"
+                  query: "Explain this code"
+                  scope:
+                    type: "selection"
+                    selected_text: "nav2_params = {...}"
+      responses:
+        '200':
+          description: Streaming response with chat content
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream
+              examples:
+                streamExample:
+                  value: |
+                    data: {"type": "content", "text": "The navigation stack "}
+                    data: {"type": "content", "text": "can be configured by..."}
+                    data: {"type": "citation", "citation": {"chapter_title": "ROS 2 Navigation", "section_title": "Nav2 Setup", "paragraph_number": 4, "relevance_score": 0.92}}
+                    data: {"type": "done"}
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                emptyQuery:
+                  value:
+                    error: "validation_error"
+                    message: "Query text cannot be empty"
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                rateLimited:
+                  value:
+                    error: "rate_limit_exceeded"
+                    message: "Rate limit of 60 requests per minute exceeded. Retry after 15 seconds."
+                    retry_after: 15
+
+  /api/sessions:
+    post:
+      summary: Create a new session
+      description: Creates a new conversation session and returns the session ID
+      operationId: createSession
+      tags:
+        - Sessions
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+              examples:
+                newSession:
+                  value:
+                    id: "550e8400-e29b-41d4-a716-446655440000"
+                    created_at: "2025-12-10T14:30:00Z"
+                    last_activity: "2025-12-10T14:30:00Z"
+                    conversation_history: []
+                    scope_context: {}
+
+  /api/sessions/{session_id}:
+    get:
+      summary: Get session details
+      description: Retrieves the current state of a session including conversation history
+      operationId: getSession
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      responses:
+        '200':
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  value:
+                    error: "not_found"
+                    message: "Session not found or expired"
+
+    delete:
+      summary: End a session
+      description: Explicitly ends and deletes a session
+      operationId: deleteSession
+      tags:
+        - Sessions
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique session identifier
+      responses:
+        '204':
+          description: Session deleted successfully
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/health:
+    get:
+      summary: Health check
+      description: Returns the health status of the API and its dependencies
+      operationId: healthCheck
+      tags:
+        - System
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+              examples:
+                healthy:
+                  value:
+                    status: "healthy"
+                    version: "1.0.0"
+                    dependencies:
+                      qdrant: "connected"
+                      postgres: "connected"
+                      openai: "connected"
+        '503':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+              examples:
+                unhealthy:
+                  value:
+                    status: "unhealthy"
+                    version: "1.0.0"
+                    dependencies:
+                      qdrant: "disconnected"
+                      postgres: "connected"
+                      openai: "connected"
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - query
+        - scope
+      properties:
+        session_id:
+          type: string
+          format: uuid
+          description: Session identifier (optional, creates new session if not provided)
+        query:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: User's natural language question
+        scope:
+          $ref: '#/components/schemas/ScopeContext'
+
+    ScopeContext:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: [page, selection, module, all]
+          description: Type of content scope
+        chapter_id:
+          type: string
+          description: Chapter identifier (required when type=page)
+        module_id:
+          type: string
+          description: Module identifier (required when type=module)
+        selected_text:
+          type: string
+          maxLength: 5000
+          description: User-selected text (required when type=selection)
+      discriminator:
+        propertyName: type
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique session identifier
+        created_at:
+          type: string
+          format: date-time
+          description: Session creation timestamp
+        last_activity:
+          type: string
+          format: date-time
+          description: Last query timestamp
+        conversation_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationEntry'
+          maxItems: 20
+          description: Previous Q&A pairs (max 20)
+        scope_context:
+          $ref: '#/components/schemas/ScopeContext'
+
+    ConversationEntry:
+      type: object
+      properties:
+        query:
+          type: string
+          description: User's question
+        response:
+          type: string
+          description: Chatbot's answer
+        timestamp:
+          type: string
+          format: date-time
+          description: Entry timestamp
+
+    Citation:
+      type: object
+      properties:
+        chunk_id:
+          type: string
+          description: Reference to source content chunk
+        chapter_title:
+          type: string
+          description: Human-readable chapter name
+        section_title:
+          type: string
+          description: Human-readable section name
+        paragraph_number:
+          type: integer
+          minimum: 1
+          description: Paragraph number within section
+        relevance_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Similarity score from vector search
+        excerpt:
+          type: string
+          maxLength: 200
+          description: Short text excerpt from source
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          description: Overall service status
+        version:
+          type: string
+          description: API version
+        dependencies:
+          type: object
+          properties:
+            qdrant:
+              type: string
+              enum: [connected, disconnected]
+            postgres:
+              type: string
+              enum: [connected, disconnected]
+            openai:
+              type: string
+              enum: [connected, disconnected]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        retry_after:
+          type: integer
+          description: Seconds to wait before retry (for rate limits)
+
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session_id
+      description: Session identifier stored in cookie
+
+security:
+  - sessionCookie: []
+
+tags:
+  - name: Chat
+    description: Chat query processing
+  - name: Sessions
+    description: Session management
+  - name: System
+    description: System health and status
