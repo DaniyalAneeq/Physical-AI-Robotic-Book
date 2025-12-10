@@ -86,7 +86,7 @@ const config: Config = {
           position: 'left',
           label: 'Book',
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
+        // { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
           label: 'GitHub',
@@ -134,10 +134,10 @@ const config: Config = {
               label: 'Notation Guide',
               to: '/docs/notation',
             },
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
+            // {
+            //   label: 'Blog',
+            //   to: '/blog',
+            // },
           ],
         },
         {
