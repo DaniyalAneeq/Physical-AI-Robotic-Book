@@ -3,7 +3,12 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HeroSection from '@site/src/components/HeroSection';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import ModuleOverview from '@site/src/components/ModuleOverview';
+import TechStack from '@site/src/components/TechStack';
+import Stats from '@site/src/components/Stats';
+import LearningPath from '@site/src/components/LearningPath';
 import CallToAction from '@site/src/components/CallToAction';
+import FloatingChatButton from '@site/src/components/FloatingChatButton';
 
 function useTransparentNavbar() {
   useEffect(() => {
@@ -40,19 +45,41 @@ export default function Home(): ReactNode {
       title="AI-Driven Development in Robotics"
       description="An Open-Source Textbook on AI-Driven Development in Robotics">
       <HeroSection
-        title="Starts Your Robotic Journey"
-        subtitle="An Open-Source Textbook on Physical AI & Humanoid Robotics Course"
+        title="Start Your Robotics Journey"
+        subtitle="An Open-Source Textbook on Physical AI & Humanoid Robotics"
         backgroundVideo="/video/Video_Editing_and_Generation.mp4"
         primaryAction={{
-          label: 'Read Now →',
+          label: 'Start Learning',
           href: '/docs/intro',
+        }}
+        secondaryAction={{
+          label: 'View on GitHub',
+          href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
+          external: true,
         }}
         alignment="center"
       />
       <main>
         <HomepageFeatures />
-        <CallToAction />
+        <ModuleOverview />
+        <Stats />
+        <TechStack />
+        <LearningPath />
+        <CallToAction
+          title="Ready to Build Intelligent Robots?"
+          subtitle="Join thousands of learners mastering AI-driven robotics development. Start your journey today with our comprehensive, hands-on curriculum."
+          primaryButton={{
+            label: 'Start Reading Free',
+            href: '/docs/intro',
+          }}
+          secondaryButton={{
+            label: 'View GitHub',
+            href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',
+            external: true,
+          }}
+        />
       </main>
+      <FloatingChatButton />
     </Layout>
   );
 }

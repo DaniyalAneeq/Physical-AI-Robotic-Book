@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # Qdrant Cloud - REQUIRED: Set via environment variables
     qdrant_url: str
     qdrant_api_key: str
-    qdrant_collection_name: str = "aidd-book-embeddings"
+    qdrant_collection_name: str = "content-aidd-book"
 
     # Neon Postgres - REQUIRED: Set via NEON_DATABASE_URL environment variable
     neon_database_url: str

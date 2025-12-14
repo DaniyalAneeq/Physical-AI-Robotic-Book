@@ -1,0 +1,162 @@
+"""Conversation management API endpoints."""
+
+import logging
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app.models.conversation import Conversation
+from app.models.database import get_db
+from app.models.message import Message
+
+router = APIRouter()
+logger = logging.getLogger(__name__)
+
+
+@router.get("/conversations")
+async def list_conversations(session_id: str, db: Session = Depends(get_db)):
+    """
+    List all conversations for a session.
+
+    Args:
+        session_id: Browser session UUID
+        db: Database session
+
+    Returns:
+        List of conversations with metadata
+    """
+    try:
+        conversations = (
+            db.query(Conversation)
+            .filter(Conversation.session_id == session_id)
+            .order_by(Conversation.updated_at.desc())
+            .all()
+        )
+
+        return [
+            {
+                "id": str(conv.id),
+                "title": conv.title,
+                "created_at": conv.created_at.isoformat(),
+                "updated_at": conv.updated_at.isoformat() if conv.updated_at else None,
+            }
+            for conv in conversations
+        ]
+    except Exception as e:
+        logger.error(f"Failed to list conversations: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve conversations") from e
+
+
+@router.get("/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str, db: Session = Depends(get_db)):
+    """
+    Get conversation details with all messages.
+
+    Args:
+        conversation_id: Conversation UUID
+        db: Database session
+
+    Returns:
+        Conversation with messages
+    """
+    try:
+        conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+
+        messages = (
+            db.query(Message)
+            .filter(Message.conversation_id == conversation_id)
+            .order_by(Message.created_at.asc())
+            .all()
+        )
+
+        return {
+            "id": str(conversation.id),
+            "title": conversation.title,
+            "created_at": conversation.created_at.isoformat(),
+            "updated_at": conversation.updated_at.isoformat() if conversation.updated_at else None,
+            "messages": [
+                {
+                    "id": str(msg.id),
+                    "role": msg.role,
+                    "content": msg.content,
+                    "citations": msg.citations,
+                    "created_at": msg.created_at.isoformat(),
+                }
+                for msg in messages
+            ],
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to get conversation: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve conversation") from e
+
+
+@router.patch("/conversations/{conversation_id}")
+async def update_conversation(conversation_id: str, title: str, db: Session = Depends(get_db)):
+    """
+    Update conversation title.
+
+    Args:
+        conversation_id: Conversation UUID
+        title: New title
+        db: Database session
+
+    Returns:
+        Updated conversation
+    """
+    try:
+        conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+
+        conversation.title = title
+        conversation.updated_at = datetime.utcnow()
+        db.commit()
+
+        return {
+            "id": str(conversation.id),
+            "title": conversation.title,
+            "updated_at": conversation.updated_at.isoformat(),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to update conversation: {e}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to update conversation") from e
+
+
+@router.delete("/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str, db: Session = Depends(get_db)):
+    """
+    Delete conversation and all associated messages.
+
+    Args:
+        conversation_id: Conversation UUID
+        db: Database session
+
+    Returns:
+        Deletion confirmation
+    """
+    try:
+        conversation = db.query(Conversation).filter(Conversation.id == conversation_id).first()
+
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+
+        db.delete(conversation)  # Messages cascade-deleted via FK
+        db.commit()
+
+        return {"status": "deleted", "conversation_id": conversation_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to delete conversation: {e}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to delete conversation") from e

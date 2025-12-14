@@ -86,6 +86,11 @@ const config: Config = {
           position: 'left',
           label: 'Book',
         },
+        {
+          to: '/chat',
+          label: '💬 Ask AI',
+          position: 'left',
+        },
         // { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/DaniyalAneeq/Physical-AI-Robotic-Book',

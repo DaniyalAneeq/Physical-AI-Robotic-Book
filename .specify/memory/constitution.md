@@ -1,23 +1,19 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.1.0 (MINOR - new section added)
+Version change: 1.1.0 → 1.2.0 (MINOR - authentication section added)
 
-Modified principles: None (all principles retained)
+Modified principles:
+  - VIII renamed and expanded to include Authentication Security
 
 Added sections:
-  - Section VII: Integrated RAG Chatbot Development
-  - Section VIII: Content Workflow (RAG artifacts integrated)
-  - Section IX: Quality Gates (RAG-specific quality criteria added)
+  - Section X: Authentication & Identity Management (Better Auth)
+  - Authentication Quality Gates
 
 Removed sections: None
 
 Templates requiring updates:
-  - .specify/templates/plan-template.md → ✅ No update required (Constitution Check references constitution dynamically)
-  - .specify/templates/spec-template.md → ✅ No update required (generic template)
-  - .specify/templates/tasks-template.md → ✅ No update required (generic template)
-
-Follow-up TODOs: None
+  - None (constitution-only change)
 -->
 
 # Physical AI & Humanoid Robotics Textbook Constitution
@@ -28,147 +24,133 @@ Follow-up TODOs: None
 
 All content MUST be technically accurate and verifiable. Code examples MUST be executable and tested. API references MUST match official documentation. Outdated or deprecated methods MUST NOT be used without explicit deprecation notices.
 
-**Rationale**: Learners rely on textbook content for production implementations; inaccuracies erode trust and cause downstream failures.
-
 ### II. Pedagogical Clarity
 
-Content MUST follow a progressive learning path: fundamentals before advanced topics. Each chapter MUST include learning objectives, key concepts, and practical exercises. Diagrams MUST be described with sufficient detail for visual learners and accessibility.
-
-**Rationale**: Effective learning requires scaffolded instruction that builds on prior knowledge.
+Content MUST follow a progressive learning path: fundamentals before advanced topics. Each chapter MUST include learning objectives, key concepts, and practical exercises.
 
 ### III. Consistency & Standards
 
-All content MUST adhere to consistent formatting, naming conventions, and structural patterns across modules. Docusaurus markdown conventions MUST be followed. File naming MUST be deterministic (e.g., `01-introduction.md`, `02-setup.md`).
-
-**Rationale**: Consistency reduces cognitive load and enables automated tooling.
+All content MUST adhere to consistent formatting, naming conventions, and structural patterns. Docusaurus markdown conventions MUST be followed.
 
 ### IV. Code Quality
 
-All code examples MUST follow language-specific best practices (PEP 8 for Python, ROS 2 conventions for rclpy). Examples MUST include error handling where appropriate. Dependencies MUST be explicitly versioned.
-
-**Rationale**: Learners adopt patterns from examples; poor examples propagate poor practices.
+All code examples MUST follow language-specific best practices (PEP 8 for Python). Dependencies MUST be explicitly versioned.
 
 ### V. Integration Coherence
 
-All modules MUST build toward the unified capstone project (Autonomous Humanoid). Cross-module references MUST be explicit. Prerequisites MUST be clearly stated at each chapter's beginning.
-
-**Rationale**: The textbook forms a coherent learning journey; isolated modules fail the integrated vision.
+All modules MUST build toward the unified capstone project. Cross-module references MUST be explicit.
 
 ### VI. Technology Currency
 
-Primary technologies: ROS 2 (Foxy/Humble), Gazebo, Unity Robotics SDK, NVIDIA Isaac Sim, Docusaurus 3.x. All version references MUST specify minimum versions. Deprecated features MUST include migration guidance.
+Primary technologies include Docusaurus 3.x, FastAPI, OpenAI Agents SDK, Qdrant, and Neon. All versions MUST be pinned or minimally specified.
 
-**Rationale**: Robotics evolves rapidly; stale technology references mislead learners.
+---
 
 ## Integrated RAG Chatbot Development
 
 ### VII. RAG Chatbot Architecture
 
-The textbook MUST include an embedded Retrieval-Augmented Generation (RAG) chatbot that enables learners to query book content interactively.
+The textbook MUST include an embedded Retrieval-Augmented Generation (RAG) chatbot.
 
 **Technical Stack**:
-- **Reasoning Engine**: OpenAI Agents/ChatKit SDKs for response generation
-- **Backend**: FastAPI for API endpoints
-- **Database**: Neon Serverless Postgres for embeddings and session data
-- **Vector Search**: Qdrant Cloud (Free Tier) for content retrieval
-- **Frontend**: Fully embedded in Docusaurus pages with interactive UI
 
-**Core Requirements**:
-1. **Content Fidelity**: Responses MUST be grounded exclusively in textbook content. No hallucinated or external information.
-2. **Selective Retrieval**: Users MUST be able to scope queries to specific chapters, modules, or user-selected text passages.
-3. **Technical Accuracy**: All chatbot responses MUST maintain the same accuracy and pedagogical clarity standards as static content.
-4. **Citation Transparency**: Responses MUST include source references (chapter, section, page/paragraph where applicable).
+* Reasoning: OpenAI Agents SDK (required)
+* Backend: FastAPI
+* Database: Neon Serverless Postgres
+* Vector Store: Qdrant Cloud
+* Frontend: Docusaurus-integrated UI
 
-**Rationale**: Interactive Q&A accelerates learning and addresses individual learner questions without requiring instructor availability.
+### VIII. RAG Security, Privacy & Sessions
 
-### VIII. RAG Security & Privacy
+1. Parameterized queries only
+2. Encrypted session handling
+3. No PII storage
+4. Rate limiting (60 req/min/session)
 
-1. **Query Security**: All database and vector store queries MUST use parameterized queries to prevent injection attacks.
-2. **Session Management**: User sessions MUST be managed securely with encrypted tokens. Session data MUST expire after 24 hours of inactivity.
-3. **Privacy Compliance**: Logging MUST capture query patterns for analytics without storing personally identifiable information (PII). IP addresses MUST be anonymized.
-4. **Rate Limiting**: API endpoints MUST enforce rate limits to prevent abuse (default: 60 requests/minute per session).
+---
 
-**Rationale**: Educational platforms handle learner data; security and privacy are non-negotiable.
+## Authentication & Identity Management
 
-### IX. RAG Versioning & Dependencies
+### IX. Authentication Architecture (Better Auth)
 
-All RAG-related components MUST specify explicit versions:
-- OpenAI SDK: Minimum version in `requirements.txt`
-- FastAPI: Pinned version with patch range
-- Qdrant Client: Pinned version
-- Neon Postgres driver: Pinned version
-- Frontend SDK/components: Pinned in `package.json`
+Authentication MUST be implemented using **Better Auth** as the single source of truth.
 
-Configuration and setup instructions MUST be documented in `CLAUDE.md` for AI workflow integration.
+**Architecture Model**:
 
-**Rationale**: Reproducibility requires explicit versioning; implicit versions cause deployment failures.
+* Backend-first authentication via FastAPI
+* Frontend (Docusaurus) consumes auth state via HTTP only
+* No authentication secrets or logic in frontend code
+
+### X. Authentication Rules
+
+1. Custom authentication flows that replace or duplicate Better Auth are forbidden
+2. Only documented Better Auth extensions (callbacks, adapters) are permitted
+3. Backend MUST validate identity on every protected request
+4. Sessions, cookies, or tokens MUST be:
+
+   * HttpOnly (where applicable)
+   * Secure in production
+   * Properly expired and rotated
+
+### XI. Authentication Integration Scope
+
+Authentication review MUST include:
+
+* FastAPI auth configuration and routes
+* Login, logout, session, and OAuth endpoints
+* Token and cookie handling
+* Auth-related database schema
+* Environment variables
+
+### XII. Authentication Tooling
+
+* Better Auth documentation MUST be retrieved via Context 7 MCP or better-auth MCP
+* Authentication changes MUST be reviewed by the `better-auth-expert` agent
+
+---
 
 ## Content Workflow
 
-### X. Artifact Sequence
+### XIII. Artifact Sequence
 
-All features, including RAG chatbot development, MUST follow this artifact sequence:
+All features MUST follow:
 
-1. **Specification** (`spec.md`): Define scope, user stories, functional requirements, and success criteria.
-2. **Plan** (`plan.md`): Document architecture, integration points, UI/UX design, and technical decisions.
-3. **Tasks** (`tasks.md`): Break implementation into testable, dependency-ordered tasks.
-4. **Implementation**: Execute tasks following constitution principles. Use TDD where specified.
-5. **Review**: Validate accuracy, response quality, security compliance, and accessibility.
+1. Specification
+2. Plan
+3. Tasks
+4. Implementation
+5. Review
 
-**RAG-Specific Artifacts**:
-- Backend embedding pipeline specification
-- Vector store schema and indexing strategy
-- Frontend component integration plan
-- End-to-end query flow tests
-
-**Rationale**: Structured workflow ensures traceability from requirements to implementation.
+---
 
 ## Quality Gates
 
-### XI. Content Quality Gates
+### XIV. Authentication Quality Gates
 
-All textbook content MUST pass:
-- [ ] Technical review by subject matter expert
-- [ ] Code execution validation (all examples run without error)
-- [ ] Accessibility check (alt text for images, semantic headings)
-- [ ] Cross-reference validation (all links resolve)
-- [ ] Build validation (`npm run build` succeeds)
+Authentication changes MUST pass:
 
-### XII. RAG Chatbot Quality Gates
+* [ ] No custom auth logic bypassing Better Auth
+* [ ] Secure cookie/token configuration
+* [ ] Session expiration verified
+* [ ] Frontend contains no secrets
+* [ ] Auth flows tested in staging
 
-RAG integration MUST pass:
-- [ ] **Accuracy Test**: 95% of test queries MUST return correct answers from selected content
-- [ ] **Retrieval Precision**: Retrieved chunks MUST be relevant to query (precision > 0.85)
-- [ ] **Latency**: Query-to-response time MUST be < 3 seconds (p95)
-- [ ] **Build Integration**: Chatbot components MUST not break Docusaurus build
-- [ ] **Deployment Check**: Staging deployment MUST pass smoke tests before production
-- [ ] **Accessibility**: Chatbot UI MUST be keyboard-navigable and screen-reader compatible (WCAG 2.1 AA)
+### XV. RAG Chatbot Quality Gates
 
-**Rationale**: Quality gates prevent regressions and ensure consistent learner experience.
+RAG integration MUST meet accuracy, latency, build, and accessibility thresholds.
+
+---
 
 ## Governance
 
-### XIII. Amendment Process
+### XVI. Amendment Process
 
-1. All constitution amendments MUST be documented with rationale.
-2. Amendments MUST follow semantic versioning:
-   - MAJOR: Backward-incompatible principle changes
-   - MINOR: New sections or material expansions
-   - PATCH: Clarifications and wording fixes
-3. Amendments MUST update dependent templates where necessary.
-4. All PRs MUST verify compliance with this constitution.
+Amendments MUST follow semantic versioning and be documented.
 
-### XIV. Compliance Review
+### XVII. Compliance Review
 
-1. Constitution supersedes all other practices.
-2. Complexity MUST be justified in the Complexity Tracking section of implementation plans.
-3. Deviations MUST be documented as ADRs with explicit approval.
+This constitution supersedes all other practices.
 
-### XV. RAG Governance
+---
 
-1. RAG chatbot updates MUST comply with all existing constitution principles.
-2. Model/SDK upgrades MUST be tested against quality gates before deployment.
-3. Embedding schema changes MUST include migration plans.
-4. User feedback on chatbot responses MUST be reviewed monthly for accuracy improvements.
-
-**Version**: 1.1.0 | **Ratified**: 2025-12-10 | **Last Amended**: 2025-12-10
+**Version**: 1.2.0 | **Ratified**: 2025-12-14 | **Last Amended**: 2025-12-14

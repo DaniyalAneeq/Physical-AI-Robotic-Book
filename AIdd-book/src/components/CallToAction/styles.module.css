@@ -4,17 +4,33 @@
  */
 
 .callToAction {
+  position: relative;
   padding: var(--token-spacing-4xl) var(--token-spacing-md);
-  background: rgba(255, 255, 255, 0.06); /* translucent layer */
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  margin: var(--token-spacing-2xl) var(--token-spacing-md);
+  background: linear-gradient(
+    135deg,
+    var(--token-color-primary) 0%,
+    var(--token-color-primary-dark) 50%,
+    var(--token-color-primary-darkest) 100%
+  );
+  border-radius: var(--token-radius-xl);
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+  overflow: hidden;
+}
+
+.callToAction::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .container {
+  position: relative;
+  z-index: 1;
   max-width: var(--token-max-width-lg);
   margin: 0 auto;
 }
@@ -46,41 +62,42 @@
   justify-content: center;
 }
 
-/* Glassmorphic Buttons */
+/* CTA Buttons */
 .primaryButton {
-  background: rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: #ffffff;
+  color: var(--token-color-primary-dark);
+  border: 2px solid #ffffff;
   font-weight: var(--token-font-weight-semibold);
-  padding: var(--token-spacing-sm) var(--token-spacing-xl);
-  backdrop-filter: blur(10px);
+  padding: var(--token-spacing-md) var(--token-spacing-xl);
   transition: all var(--token-duration-fast) var(--token-easing-out);
-  border-radius: 12px;
+  border-radius: var(--token-radius-lg);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .primaryButton:hover {
-  background: rgba(255, 255, 255, 0.45);
-  color: var(--token-color-primary-dark);
+  background: transparent;
+  color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  text-decoration: none;
 }
 
 .secondaryButton {
-  background: rgba(255, 255, 255, 0.15);
+  background: transparent;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   font-weight: var(--token-font-weight-semibold);
-  padding: var(--token-spacing-sm) var(--token-spacing-xl);
-  backdrop-filter: blur(10px);
+  padding: var(--token-spacing-md) var(--token-spacing-xl);
   transition: all var(--token-duration-fast) var(--token-easing-out);
-  border-radius: 12px;
+  border-radius: var(--token-radius-lg);
 }
 
 .secondaryButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
   color: #ffffff;
   transform: translateY(-2px);
+  text-decoration: none;
 }
 
 /* Animations */
