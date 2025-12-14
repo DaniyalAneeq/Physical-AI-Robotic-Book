@@ -21,7 +21,9 @@
       "WebSearch",
       "WebFetch(domain:openai.github.io)",
       "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs"
+      "mcp__context7__get-library-docs",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(uv init:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,450 @@
+openapi: 3.1.0
+info:
+  title: RAG Chatbot API
+  description: API for the Physical AI & Humanoid Robotics textbook RAG chatbot
+  version: 1.0.0
+  contact:
+    name: Textbook Team
+
+servers:
+  - url: http://localhost:8000
+    description: Local development
+  - url: https://api.textbook.example.com
+    description: Production
+
+paths:
+  /chatkit:
+    post:
+      operationId: chatkit_endpoint
+      summary: ChatKit Protocol Endpoint
+      description: |
+        Main endpoint for ChatKit protocol communication.
+        Handles all chat operations including message sending, streaming responses,
+        and conversation management.
+      tags:
+        - ChatKit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ChatKit protocol payload (opaque to API layer)
+      responses:
+        '200':
+          description: Streaming response or JSON result
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /health:
+    get:
+      operationId: health_check
+      summary: Health Check
+      description: Returns service health status
+      tags:
+        - System
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/conversations:
+    get:
+      operationId: list_conversations
+      summary: List Conversations
+      description: Get all conversations for a session
+      tags:
+        - Conversations
+      parameters:
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Browser session UUID
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Maximum conversations to return
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+          description: Pagination offset
+      responses:
+        '200':
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/conversations/{conversation_id}:
+    get:
+      operationId: get_conversation
+      summary: Get Conversation
+      description: Get a single conversation with messages
+      tags:
+        - Conversations
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Conversation with messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      operationId: update_conversation
+      summary: Update Conversation
+      description: Update conversation title
+      tags:
+        - Conversations
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationUpdate'
+      responses:
+        '200':
+          description: Updated conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      operationId: delete_conversation
+      summary: Delete Conversation
+      description: Delete a conversation and all its messages
+      tags:
+        - Conversations
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Conversation deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/index/status:
+    get:
+      operationId: get_index_status
+      summary: Get Index Status
+      description: Get current vector index status and statistics
+      tags:
+        - Indexing
+      responses:
+        '200':
+          description: Index status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexStatus'
+
+  /api/index/rebuild:
+    post:
+      operationId: rebuild_index
+      summary: Rebuild Index
+      description: Trigger a full re-indexing of textbook content (admin only)
+      tags:
+        - Indexing
+      responses:
+        '202':
+          description: Reindex job started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexJob'
+        '409':
+          description: Reindex already in progress
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        services:
+          type: object
+          properties:
+            database:
+              type: string
+              enum: [up, down]
+            vector_store:
+              type: string
+              enum: [up, down]
+            openai:
+              type: string
+              enum: [up, down]
+
+    Conversation:
+      type: object
+      required:
+        - id
+        - session_id
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 255
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        message_count:
+          type: integer
+
+    ConversationList:
+      type: object
+      required:
+        - conversations
+        - total
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    ConversationDetail:
+      allOf:
+        - $ref: '#/components/schemas/Conversation'
+        - type: object
+          properties:
+            messages:
+              type: array
+              items:
+                $ref: '#/components/schemas/Message'
+
+    ConversationUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+
+    Message:
+      type: object
+      required:
+        - id
+        - conversation_id
+        - role
+        - content
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Citation'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    Citation:
+      type: object
+      required:
+        - module
+        - chapter
+        - section
+      properties:
+        module:
+          type: string
+          description: Module identifier (e.g., "module-1")
+        chapter:
+          type: string
+          description: Chapter filename
+        section:
+          type: string
+          description: Section heading
+        file_path:
+          type: string
+          description: Relative file path
+        relevance_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+
+    IndexStatus:
+      type: object
+      required:
+        - status
+        - total_chunks
+        - last_indexed
+      properties:
+        status:
+          type: string
+          enum: [ready, indexing, error]
+        total_chunks:
+          type: integer
+        total_files:
+          type: integer
+        last_indexed:
+          type: string
+          format: date-time
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+
+    IndexJob:
+      type: object
+      required:
+        - job_id
+        - status
+        - started_at
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        files_processed:
+          type: integer
+        chunks_created:
+          type: integer
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: bad_request
+            message: Invalid session_id format
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: not_found
+            message: Conversation not found
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: internal_error
+            message: An unexpected error occurred
+
+tags:
+  - name: ChatKit
+    description: ChatKit protocol endpoints
+  - name: Conversations
+    description: Conversation management
+  - name: Indexing
+    description: Vector index management
+  - name: System
+    description: System health and status
