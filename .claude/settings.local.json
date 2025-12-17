@@ -23,7 +23,9 @@
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
       "Bash(.specify/scripts/bash/setup-plan.sh:*)",
-      "Bash(uv init:*)"
+      "Bash(uv init:*)",
+      "mcp__better-auth__search",
+      "mcp__better-auth__chat"
     ],
     "deny": [],
     "ask": []

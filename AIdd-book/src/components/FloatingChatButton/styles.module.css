@@ -144,6 +144,45 @@
   }
 }
 
+.authRequired {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  height: 100%;
+  gap: 1rem;
+}
+
+.lockIcon {
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.authRequired h4 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
+
+.authRequired p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.authButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 @media (max-width: 768px) {
   .chatModal {
     bottom: 0;
@@ -159,5 +198,23 @@
 
   .chatModalHeader {
     border-radius: 0;
+  }
+
+  .authRequired {
+    padding: 1.5rem;
+  }
+
+  .authRequired p {
+    font-size: 0.95rem;
+  }
+
+  .authButtons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .authButtons a {
+    width: 100%;
   }
 }

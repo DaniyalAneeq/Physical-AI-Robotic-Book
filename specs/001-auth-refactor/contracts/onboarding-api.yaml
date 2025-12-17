@@ -1,0 +1,300 @@
+openapi: 3.1.0
+info:
+  title: Onboarding API
+  description: User onboarding endpoints for collecting profile data
+  version: 1.0.0
+  contact:
+    name: API Support
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.example.com
+    description: Production server (placeholder)
+
+paths:
+  /auth/onboarding/status:
+    get:
+      summary: Get onboarding status
+      description: Check if the current user has completed onboarding
+      operationId: getOnboardingStatus
+      tags:
+        - Onboarding
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Onboarding status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingStatusResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/onboarding/options:
+    get:
+      summary: Get onboarding form options
+      description: Get predefined options for onboarding form fields
+      operationId: getOnboardingOptions
+      tags:
+        - Onboarding
+      responses:
+        '200':
+          description: Onboarding form options
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingOptionsResponse'
+
+  /auth/onboarding/complete:
+    post:
+      summary: Complete onboarding
+      description: Submit onboarding profile data for the authenticated user
+      operationId: completeOnboarding
+      tags:
+        - Onboarding
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingRequest'
+      responses:
+        '200':
+          description: Onboarding completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingCompleteResponse'
+        '400':
+          description: Invalid onboarding data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: User has already completed onboarding
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/onboarding/profile:
+    get:
+      summary: Get onboarding profile
+      description: Get the current user's onboarding profile data
+      operationId: getOnboardingProfile
+      tags:
+        - Onboarding
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Onboarding profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingProfileResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Onboarding not completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_token
+
+  schemas:
+    OnboardingStatusResponse:
+      type: object
+      properties:
+        completed:
+          type: boolean
+          description: Whether user has completed onboarding
+          example: false
+        profile_exists:
+          type: boolean
+          description: Whether onboarding profile record exists
+          example: false
+
+    OnboardingOptionsResponse:
+      type: object
+      properties:
+        user_types:
+          type: array
+          items:
+            type: string
+            enum:
+              - Student
+              - Researcher
+              - Teacher
+              - Engineer
+              - Other
+          example: ["Student", "Researcher", "Teacher", "Engineer", "Other"]
+        areas_of_interest:
+          type: array
+          items:
+            type: string
+          example:
+            - "Robotics & Automation"
+            - "Artificial Intelligence & Machine Learning"
+            - "Computer Vision"
+            - "Natural Language Processing"
+            - "Hardware & Embedded Systems"
+            - "Simulation & Virtual Environments"
+            - "Other"
+        experience_levels:
+          type: array
+          items:
+            type: string
+            enum:
+              - Beginner
+              - Intermediate
+              - Advanced
+          example: ["Beginner", "Intermediate", "Advanced"]
+        topics_of_interest:
+          type: array
+          items:
+            type: string
+          example:
+            - "ROS2"
+            - "NVIDIA Isaac"
+            - "Voice Control"
+            - "LLM Integration"
+            - "Reinforcement Learning"
+            - "Computer Vision"
+            - "Path Planning"
+            - "Manipulation"
+
+    OnboardingRequest:
+      type: object
+      required:
+        - user_type
+        - area_of_interest
+        - experience_level
+      properties:
+        user_type:
+          type: string
+          enum:
+            - Student
+            - Researcher
+            - Teacher
+            - Engineer
+            - Other
+          example: "Researcher"
+        area_of_interest:
+          type: string
+          maxLength: 100
+          example: "Robotics & Automation"
+        experience_level:
+          type: string
+          enum:
+            - Beginner
+            - Intermediate
+            - Advanced
+          example: "Intermediate"
+        topics_of_interest:
+          type: array
+          items:
+            type: string
+          nullable: true
+          maxItems: 10
+          example: ["ROS2", "NVIDIA Isaac", "Reinforcement Learning"]
+
+    OnboardingCompleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        redirect:
+          type: string
+          description: URL to redirect user to after onboarding
+          example: "/"
+        profile:
+          $ref: '#/components/schemas/OnboardingProfileResponse'
+
+    OnboardingProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        user_id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-1234-5678-9012-abcdef123456"
+        user_type:
+          type: string
+          enum:
+            - Student
+            - Researcher
+            - Teacher
+            - Engineer
+            - Other
+          example: "Researcher"
+        area_of_interest:
+          type: string
+          example: "Robotics & Automation"
+        experience_level:
+          type: string
+          enum:
+            - Beginner
+            - Intermediate
+            - Advanced
+          example: "Intermediate"
+        topics_of_interest:
+          type: array
+          items:
+            type: string
+          nullable: true
+          example: ["ROS2", "NVIDIA Isaac", "Reinforcement Learning"]
+        completed_at:
+          type: string
+          format: date-time
+          example: "2025-12-16T10:30:00Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-16T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-12-16T10:30:00Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Invalid input"
+        code:
+          type: string
+          description: Error code for client-side handling
+          example: "VALIDATION_ERROR"
+          nullable: true

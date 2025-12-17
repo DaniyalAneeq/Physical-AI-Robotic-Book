@@ -216,6 +216,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 - N/A (static site) (001-frontend-redesign)
 - Python 3.11+ (backend), TypeScript 5.x (frontend) + OpenAI ChatKit SDK, FastAPI 0.115+, Qdrant Client 1.10+, psycopg3 (003-rag-chatbot)
 - Qdrant Cloud (vectors), Neon Serverless Postgres (sessions) (003-rag-chatbot)
+- Python 3.11+ + FastAPI 0.115+, Better Auth (authentication framework), psycopg3 (Postgres adapter), Pydantic (validation) (001-auth-refactor)
+- Neon Serverless Postgres (existing shared database instance) (001-auth-refactor)
 
 ## Recent Changes
 - 002-ai-robotics-textbook: Added Python 3.x (latest stable recommended), C# (for Unity), Docusaurus (latest stable) + ROS 2 Foxy/Humble, Gazebo, Unity Robotics SDK, NVIDIA Isaac Sim, `rclpy`, URDF, Gazebo SDF, Unity C#, Isaac Sim API (Omniverse Kit/Python API), OpenCV, NLP libraries (e.g., spaCy, NLTK), LLM APIs

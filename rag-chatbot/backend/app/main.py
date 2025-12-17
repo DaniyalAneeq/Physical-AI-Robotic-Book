@@ -5,8 +5,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
-from app.api import chatkit, conversations, health, index
+from app.api import chatkit, conversations, health, index, sessions
 from app.config import get_settings
 
 settings = get_settings()
@@ -17,6 +18,23 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+# Import auth routers from auth_backend
+try:
+    import sys
+    from pathlib import Path
+
+    # Add parent directory to Python path to find auth_backend module
+    parent_dir = Path(__file__).resolve().parent.parent.parent
+    if str(parent_dir) not in sys.path:
+        sys.path.insert(0, str(parent_dir))
+
+    from auth_backend.api.routes import auth, oauth, onboarding
+    AUTH_AVAILABLE = True
+    logger.info("Auth backend loaded successfully")
+except ImportError as e:
+    AUTH_AVAILABLE = False
+    logger.warning(f"Auth backend not available - authentication endpoints disabled: {e}")
 
 
 @asynccontextmanager
@@ -36,10 +54,22 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="RAG Chatbot API",
-    description="API for the Physical AI & Humanoid Robotics textbook RAG chatbot",
+    title="Unified Backend API",
+    description="Unified backend for Physical AI & Humanoid Robotics textbook - RAG chatbot and authentication",
     version="1.0.0",
     lifespan=lifespan,
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
+
+# Add session middleware for OAuth state management (required by authlib)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.session_secret,
+    session_cookie="oauth_state",
+    max_age=600,  # OAuth state expires in 10 minutes
+    same_site="lax",
+    https_only=settings.cookie_secure,
 )
 
 # Configure CORS
@@ -54,15 +84,30 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, tags=["System"])
 app.include_router(chatkit.router, tags=["ChatKit"])
+app.include_router(sessions.router, prefix="/api", tags=["Sessions"])  # Frontend-compatible endpoints
 app.include_router(conversations.router, prefix="/api", tags=["Conversations"])
 app.include_router(index.router, prefix="/api", tags=["Indexing"])
+
+# Include auth routers if available (with /auth prefix for authentication endpoints)
+if AUTH_AVAILABLE:
+    app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+    app.include_router(oauth.router, prefix="/auth/oauth", tags=["OAuth"])
+    app.include_router(onboarding.router, prefix="/auth/onboarding", tags=["Onboarding"])
+    logger.info("Auth routes registered: /auth/*, /auth/oauth/*, /auth/onboarding/*")
 
 
 @app.get("/")
 async def root():
     """Root endpoint with API information."""
     return {
-        "name": "RAG Chatbot API",
+        "name": "Unified Backend API",
         "version": "1.0.0",
+        "description": "RAG Chatbot + Authentication",
+        "endpoints": {
+            "rag": "/api/*",
+            "auth": "/auth/*",
+            "oauth": "/auth/oauth/*",
+        },
         "docs": "/docs",
+        "health": "/api/health",
     }

@@ -1,0 +1,513 @@
+openapi: 3.0.3
+info:
+  title: Authentication API
+  description: |
+    Better Auth-compatible authentication API for FastAPI backend.
+    Implements email/password and Google OAuth authentication with secure session management.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: https://app.example.com/api
+    description: Production server
+  - url: http://localhost:8000/api
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: User signup, login, and session management
+  - name: OAuth
+    description: OAuth 2.0 provider integration (Google)
+  - name: Session
+    description: Session validation and management
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user with email and password
+      description: |
+        Creates a new user account with email and password. Returns user data and
+        establishes a session by setting an HttpOnly cookie.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              validRegistration:
+                summary: Valid registration
+                value:
+                  name: "Alice Smith"
+                  email: "alice@example.com"
+                  password: "SecurePass123"
+      responses:
+        '201':
+          description: User created successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: session=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                weakPassword:
+                  summary: Weak password
+                  value:
+                    error: "Validation failed"
+                    details:
+                      password: "Password must be at least 8 characters"
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Email already registered"
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login with email and password
+      description: |
+        Authenticates user with email and password. Returns user data and
+        establishes a session by setting an HttpOnly cookie.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              validLogin:
+                summary: Valid login
+                value:
+                  email: "alice@example.com"
+                  password: "SecurePass123"
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: session=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Invalid email or password"
+        '429':
+          description: Rate limit exceeded (too many failed attempts)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+              example:
+                error: "Too many login attempts. Please try again in 10 minutes."
+                retry_after: 600
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout current session
+      description: |
+        Terminates the current session, marks it as revoked in the database,
+        and clears the session cookie.
+      operationId: logoutUser
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: session=; Path=/; Max-Age=0
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+              example:
+                message: "Logged out successfully"
+        '401':
+          description: No active session (treated as success - idempotent)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "No active session"
+
+  /auth/session:
+    get:
+      tags:
+        - Session
+      summary: Get current authenticated user and session
+      description: |
+        Returns the current authenticated user and session information if a valid
+        session cookie is present. Returns null values if not authenticated.
+      operationId: getCurrentSession
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Session information (authenticated or not)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentSessionResponse'
+              examples:
+                authenticated:
+                  summary: Authenticated user
+                  value:
+                    user:
+                      id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                      email: "alice@example.com"
+                      name: "Alice Smith"
+                      email_verified_at: "2025-12-14T10:30:00Z"
+                      created_at: "2025-12-14T10:00:00Z"
+                    session:
+                      id: "b1ffcd99-9c0b-4ef8-bb6d-6bb9bd380a22"
+                      user_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                      created_at: "2025-12-14T10:30:00Z"
+                      last_used_at: "2025-12-14T12:00:00Z"
+                      expires_at: "2026-01-13T10:30:00Z"
+                      ip_address: "192.0.2.1"
+                      user_agent: "Mozilla/5.0..."
+                unauthenticated:
+                  summary: Not authenticated
+                  value:
+                    user: null
+                    session: null
+
+  /auth/oauth/google:
+    get:
+      tags:
+        - OAuth
+      summary: Initiate Google OAuth flow
+      description: |
+        Redirects to Google OAuth authorization endpoint with state parameter for
+        CSRF protection. After user authorization, Google redirects to callback endpoint.
+      operationId: initiateGoogleOAuth
+      responses:
+        '302':
+          description: Redirect to Google OAuth authorization page
+          headers:
+            Location:
+              schema:
+                type: string
+                example: https://accounts.google.com/o/oauth2/v2/auth?client_id=...&redirect_uri=...&response_type=code&scope=openid+email+profile&state=...
+
+  /auth/oauth/google/callback:
+    get:
+      tags:
+        - OAuth
+      summary: Google OAuth callback handler
+      description: |
+        Handles the OAuth callback from Google, exchanges authorization code for tokens,
+        verifies ID token, creates or links user account, and establishes a session.
+      operationId: handleGoogleOAuthCallback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code from Google
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: true
+          description: CSRF protection state parameter
+          schema:
+            type: string
+        - name: error
+          in: query
+          required: false
+          description: Error code if user cancels authorization
+          schema:
+            type: string
+            enum:
+              - access_denied
+      responses:
+        '302':
+          description: Redirect to application with session established
+          headers:
+            Location:
+              schema:
+                type: string
+                example: https://app.example.com/dashboard
+            Set-Cookie:
+              schema:
+                type: string
+                example: session=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax
+        '400':
+          description: Invalid state or OAuth error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidState:
+                  summary: Invalid state parameter
+                  value:
+                    error: "Invalid or expired OAuth state"
+                userCancelled:
+                  summary: User cancelled authorization
+                  value:
+                    error: "OAuth authorization cancelled"
+        '503':
+          description: OAuth token exchange failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Failed to exchange authorization code"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Session cookie (HttpOnly, Secure, SameSite=Lax)
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: User's display name
+          example: "Alice Smith"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "alice@example.com"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 128
+          description: User's password (minimum 8 characters, letters and numbers)
+          example: "SecurePass123"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "alice@example.com"
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: "SecurePass123"
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique user identifier
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "alice@example.com"
+        name:
+          type: string
+          description: User's display name
+          example: "Alice Smith"
+        email_verified_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when email was verified (null if not verified)
+          example: "2025-12-14T10:30:00Z"
+        created_at:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+          example: "2025-12-14T10:00:00Z"
+
+    SessionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique session identifier
+          example: "b1ffcd99-9c0b-4ef8-bb6d-6bb9bd380a22"
+        user_id:
+          type: string
+          format: uuid
+          description: User ID associated with this session
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        created_at:
+          type: string
+          format: date-time
+          description: Session creation timestamp
+          example: "2025-12-14T10:30:00Z"
+        last_used_at:
+          type: string
+          format: date-time
+          description: Last activity timestamp (sliding expiration)
+          example: "2025-12-14T12:00:00Z"
+        expires_at:
+          type: string
+          format: date-time
+          description: Session expiration timestamp (30 days from creation)
+          example: "2026-01-13T10:30:00Z"
+        ip_address:
+          type: string
+          nullable: true
+          description: IP address of session creation
+          example: "192.0.2.1"
+        user_agent:
+          type: string
+          nullable: true
+          description: Browser/device user agent
+          example: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+
+    AuthResponse:
+      type: object
+      required:
+        - user
+        - session
+      properties:
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        session:
+          $ref: '#/components/schemas/SessionResponse'
+
+    CurrentSessionResponse:
+      type: object
+      properties:
+        user:
+          allOf:
+            - $ref: '#/components/schemas/UserResponse'
+          nullable: true
+        session:
+          allOf:
+            - $ref: '#/components/schemas/SessionResponse'
+          nullable: true
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Invalid email or password"
+
+    ValidationError:
+      type: object
+      required:
+        - error
+        - details
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "Validation failed"
+        details:
+          type: object
+          additionalProperties:
+            type: string
+          description: Field-specific validation errors
+          example:
+            password: "Password must be at least 8 characters"
+            email: "Invalid email format"
+
+    RateLimitError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Rate limit error message
+          example: "Too many login attempts. Please try again in 10 minutes."
+        retry_after:
+          type: integer
+          description: Seconds until rate limit resets
+          example: 600
+
+    SuccessMessage:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: "Logged out successfully"
+
+  examples:
+    ValidUser:
+      value:
+        id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        email: "alice@example.com"
+        name: "Alice Smith"
+        email_verified_at: "2025-12-14T10:30:00Z"
+        created_at: "2025-12-14T10:00:00Z"
+
+    ValidSession:
+      value:
+        id: "b1ffcd99-9c0b-4ef8-bb6d-6bb9bd380a22"
+        user_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        created_at: "2025-12-14T10:30:00Z"
+        last_used_at: "2025-12-14T12:00:00Z"
+        expires_at: "2026-01-13T10:30:00Z"
+        ip_address: "192.0.2.1"
+        user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
