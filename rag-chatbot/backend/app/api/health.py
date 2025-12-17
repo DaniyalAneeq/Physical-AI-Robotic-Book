@@ -34,6 +34,7 @@ class ServicesHealth(BaseModel):
     database: ServiceStatus
     vector_store: ServiceStatus
     openai: ServiceStatus
+    auth_backend: ServiceStatus
 
 
 class HealthResponse(BaseModel):
@@ -81,21 +82,44 @@ async def check_openai() -> ServiceStatus:
         return ServiceStatus.DOWN
 
 
+async def check_auth_backend() -> ServiceStatus:
+    """Check if auth backend module is loaded and available."""
+    try:
+        # Try to import auth backend modules
+        from auth_backend.api.routes import auth, oauth
+        from auth_backend.models import User
+        return ServiceStatus.UP
+    except ImportError:
+        return ServiceStatus.DOWN
+
+
 @router.get("/health", response_model=HealthResponse)
+@router.get("/api/health", response_model=HealthResponse)
 async def health_check(db: Session = Depends(get_db)) -> HealthResponse:
-    """Check health of all services."""
+    """
+    Check health of all services.
+
+    Available at both /health and /api/health for backward compatibility.
+    Verifies:
+    - Database connectivity
+    - Vector store (Qdrant) connectivity
+    - OpenAI API connectivity
+    - Auth backend module availability
+    """
     database_status = await check_database(db)
     vector_store_status = await check_vector_store()
     openai_status = await check_openai()
+    auth_backend_status = await check_auth_backend()
 
     services = ServicesHealth(
         database=database_status,
         vector_store=vector_store_status,
         openai=openai_status,
+        auth_backend=auth_backend_status,
     )
 
     # Determine overall status
-    statuses = [database_status, vector_store_status, openai_status]
+    statuses = [database_status, vector_store_status, openai_status, auth_backend_status]
     down_count = sum(1 for s in statuses if s == ServiceStatus.DOWN)
 
     if down_count == 0:

@@ -1,0 +1,67 @@
+/**
+ * Navbar Auth Section Styles
+ */
+
+.colorModeToggle {
+  margin: 0 0.5rem;
+}
+
+.authSection {
+  display: flex;
+  align-items: center;
+  margin-left: 0.75rem;
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loginButton,
+.registerButton {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.loginButton {
+  color: var(--ifm-font-color-base);
+  border: 1px solid var(--ifm-color-gray-400);
+}
+
+.loginButton:hover {
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-color-gray-100);
+  border-color: var(--ifm-color-gray-500);
+  text-decoration: none;
+}
+
+.registerButton {
+  background: var(--ifm-color-primary);
+  color: white;
+  border: 1px solid var(--ifm-color-primary);
+}
+
+.registerButton:hover {
+  background: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile responsive */
+@media (max-width: 996px) {
+  .authButtons {
+    display: none;
+  }
+
+  .authSection {
+    margin-left: 0.5rem;
+  }
+}

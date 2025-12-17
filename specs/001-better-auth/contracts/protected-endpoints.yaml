@@ -1,0 +1,209 @@
+openapi: 3.0.3
+info:
+  title: Protected Endpoints Pattern
+  description: |
+    Example protected API endpoints that require authentication via session cookie.
+    All protected endpoints follow this pattern for authentication validation.
+  version: 1.0.0
+
+servers:
+  - url: https://app.example.com/api
+    description: Production server
+  - url: http://localhost:8000/api
+    description: Development server
+
+tags:
+  - name: Protected
+    description: Endpoints requiring authentication
+
+paths:
+  /chatbot/history:
+    get:
+      tags:
+        - Protected
+      summary: Get authenticated user's chatbot history
+      description: |
+        Example protected endpoint. Requires valid session cookie.
+        Returns 401 if not authenticated or session is expired/invalid.
+      operationId: getChatbotHistory
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Chatbot history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+        '401':
+          description: Authentication required or session expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+              examples:
+                notAuthenticated:
+                  summary: Not authenticated
+                  value:
+                    error: "Authentication required"
+                    message: "Please log in to access this resource"
+                sessionExpired:
+                  summary: Session expired
+                  value:
+                    error: "Session expired"
+                    message: "Your session has expired. Please log in again."
+
+  /user/profile:
+    get:
+      tags:
+        - Protected
+      summary: Get current user profile
+      description: |
+        Returns the authenticated user's profile information.
+      operationId: getUserProfile
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+
+    put:
+      tags:
+        - Protected
+      summary: Update user profile
+      description: |
+        Updates the authenticated user's profile information (name only).
+      operationId: updateUserProfile
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  example: "Alice J. Smith"
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Validation failed"
+                  details:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Name must be between 1 and 255 characters"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Session cookie (HttpOnly, Secure, SameSite=Lax)
+
+  schemas:
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a33"
+        role:
+          type: string
+          enum: [user, assistant]
+          example: "user"
+        content:
+          type: string
+          example: "What is ROS 2?"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-12-14T12:00:00Z"
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        email:
+          type: string
+          format: email
+          example: "alice@example.com"
+        name:
+          type: string
+          example: "Alice Smith"
+        email_verified_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-12-14T10:30:00Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-14T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-12-14T10:00:00Z"
+
+    AuthError:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          enum:
+            - "Authentication required"
+            - "Session expired"
+            - "Session invalid"
+          description: Error code
+          example: "Authentication required"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Please log in to access this resource"

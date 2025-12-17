@@ -1,0 +1,452 @@
+/**
+ * Authentication Components Styles
+ */
+
+/* Auth Form Container */
+.authForm {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--ifm-card-background-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.authForm h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  color: var(--ifm-font-color-base);
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0 0 2rem 0;
+  color: var(--ifm-color-gray-700);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Form Elements */
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--ifm-color-gray-400);
+  border-radius: 6px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  transition: border-color 0.2s;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.formGroup input:disabled {
+  background: var(--ifm-color-gray-200);
+  cursor: not-allowed;
+}
+
+.formGroup small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--ifm-color-gray-600);
+  font-size: 0.875rem;
+}
+
+/* Buttons */
+.submitButton,
+.googleButton {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.submitButton {
+  background: var(--ifm-color-primary);
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--ifm-color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.googleButton {
+  background: white;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+}
+
+.googleButton:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #dadce0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.googleIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--ifm-color-gray-300);
+}
+
+.divider span {
+  position: relative;
+  padding: 0 1rem;
+  background: var(--ifm-card-background-color);
+  color: var(--ifm-color-gray-600);
+  font-size: 0.875rem;
+}
+
+/* Switch Auth Link */
+.switchAuth {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--ifm-color-gray-700);
+  font-size: 0.9rem;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--ifm-color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.linkButton:hover {
+  color: var(--ifm-color-primary-dark);
+}
+
+/* Error Message */
+.error {
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 6px;
+  color: #c33;
+  font-size: 0.9rem;
+}
+
+/* User Menu Styles */
+.userMenu {
+  position: relative;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--ifm-color-gray-300);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.userButton:hover {
+  background: var(--ifm-color-gray-100);
+  border-color: var(--ifm-color-gray-400);
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ifm-color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.userName {
+  font-weight: 500;
+  color: var(--ifm-font-color-base);
+}
+
+.dropdownIcon {
+  color: var(--ifm-color-gray-600);
+}
+
+/* Dropdown Menu */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 220px;
+  background: var(--ifm-card-background-color);
+  border: 1px solid var(--ifm-color-gray-300);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 1rem;
+  border-bottom: 1px solid var(--ifm-color-gray-200);
+}
+
+.dropdownName {
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
+
+.dropdownEmail {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--ifm-color-gray-600);
+}
+
+.dropdownItem {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ifm-font-color-base);
+  font-size: 0.9rem;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.dropdownItem:hover {
+  background: var(--ifm-color-gray-100);
+}
+
+.dropdownItem svg {
+  flex-shrink: 0;
+  color: var(--ifm-color-gray-600);
+}
+
+.logoutItem {
+  color: #dc2626;
+}
+
+.logoutItem svg {
+  color: #dc2626;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: var(--ifm-color-gray-200);
+  margin: 0.5rem 0;
+}
+
+/* Onboarding Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: var(--ifm-card-background-color);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modalHeader {
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid var(--ifm-color-gray-200);
+}
+
+.modalHeader h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: var(--ifm-font-color-base);
+}
+
+.modalHeader p {
+  margin: 0;
+  color: var(--ifm-color-gray-600);
+  font-size: 0.95rem;
+}
+
+.onboardingForm {
+  padding: 2rem;
+}
+
+.onboardingForm .formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.onboardingForm select {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--ifm-color-gray-400);
+  border-radius: 6px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.onboardingForm select:focus {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.onboardingForm select:disabled {
+  background: var(--ifm-color-gray-200);
+  cursor: not-allowed;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.checkboxLabel:hover {
+  background: var(--ifm-color-gray-100);
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
+  margin: 0;
+}
+
+.checkboxLabel span {
+  font-size: 0.95rem;
+  color: var(--ifm-font-color-base);
+}
+
+.modalActions {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ifm-color-gray-200);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .authForm {
+    padding: 1.5rem;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .dropdown {
+    right: auto;
+    left: 0;
+  }
+
+  .modalContent {
+    max-height: 95vh;
+  }
+
+  .modalHeader {
+    padding: 1.5rem 1.5rem 1rem;
+  }
+
+  .onboardingForm {
+    padding: 1.5rem;
+  }
+}

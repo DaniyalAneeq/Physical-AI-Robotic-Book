@@ -38,6 +38,24 @@ class Settings(BaseSettings):
     # Content Paths
     textbook_docs_path: str = "../../AIdd-book/docs"
 
+    # Authentication Configuration
+    session_secret: str = "change-me-in-production"
+    cookie_secure: bool = False
+    cookie_samesite: str = "strict"
+
+    # OAuth - Google
+    oauth_google_client_id: str = ""
+    oauth_google_client_secret: str = ""
+    oauth_google_redirect_uri: str = "http://localhost:8000/auth/oauth/google/callback"
+
+    # OAuth - GitHub
+    oauth_github_client_id: str = ""
+    oauth_github_client_secret: str = ""
+    oauth_github_redirect_uri: str = "http://localhost:8000/auth/oauth/github/callback"
+
+    # Frontend URL
+    frontend_url: str = "http://localhost:3000"
+
     @property
     def cors_origins_list(self) -> list[str]:
         """Parse CORS origins from comma-separated string."""

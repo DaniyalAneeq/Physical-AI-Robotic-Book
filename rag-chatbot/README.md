@@ -4,10 +4,18 @@ A production-ready RAG (Retrieval Augmented Generation) chatbot that provides in
 
 ## Architecture
 
-- **Backend**: FastAPI + OpenAI Chat API with function calling
+- **Backend**: Unified FastAPI server (port 8000)
+  - RAG endpoints: `/api/*` (chatbot, sessions, conversations)
+  - Auth endpoints: `/auth/*` (authentication, OAuth, onboarding)
+- **Authentication**: Better Auth-compatible implementation
+  - Email/password + Google/GitHub OAuth 2.0
+  - Session-based authentication with HTTP-only cookies
+  - Mandatory onboarding flow
 - **Frontend**: React component for Docusaurus
 - **Vector Database**: Qdrant Cloud (1536-dimensional embeddings)
 - **Relational Database**: Neon Serverless PostgreSQL
+  - RAG data: conversations, messages, query logs
+  - Auth data: users, sessions, OAuth accounts, onboarding profiles
 - **Embeddings**: OpenAI `text-embedding-3-small`
 - **LLM**: OpenAI `gpt-4o` with streaming
 
@@ -40,6 +48,13 @@ A production-ready RAG (Retrieval Augmented Generation) chatbot that provides in
 - Filter queries by module (e.g., "module-1")
 - Qdrant payload filtering
 - Optional "All Modules" mode
+
+### ✅ User Story 6: Authenticated Access
+- User registration and login (email/password)
+- Google and GitHub OAuth 2.0
+- Mandatory onboarding (user type, interests, experience level)
+- Protected chatbot access (requires authentication + onboarding)
+- Session management (30-day absolute, 7-day idle timeout)
 
 ## Quick Start
 
@@ -96,10 +111,36 @@ import TextbookChat from '@site/src/components/TextbookChat';
 
 **Backend** (`.env`):
 ```bash
+# OpenAI
 OPENAI_API_KEY=sk-...
+
+# Qdrant Vector Database
 QDRANT_URL=https://xxx.us-east4-0.gcp.cloud.qdrant.io:6333
 QDRANT_API_KEY=...
+
+# Neon PostgreSQL
 DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+
+# Authentication
+SESSION_SECRET=generate-with-openssl-rand-hex-32
+COOKIE_SECURE=false  # Set to true in production (HTTPS)
+COOKIE_SAMESITE=lax
+
+# OAuth - Google (optional)
+OAUTH_GOOGLE_CLIENT_ID=your-google-client-id
+OAUTH_GOOGLE_CLIENT_SECRET=your-google-client-secret
+OAUTH_GOOGLE_REDIRECT_URI=http://localhost:8000/auth/oauth/google/callback
+
+# OAuth - GitHub (optional)
+OAUTH_GITHUB_CLIENT_ID=your-github-client-id
+OAUTH_GITHUB_CLIENT_SECRET=your-github-client-secret
+OAUTH_GITHUB_REDIRECT_URI=http://localhost:8000/auth/oauth/github/callback
+
+# Frontend URL for OAuth redirects
+FRONTEND_URL=http://localhost:3000
+
+# CORS
+CORS_ORIGINS=http://localhost:3000,http://localhost:8000
 ```
 
 **Frontend** (`.env.example`):
@@ -107,16 +148,47 @@ DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmod
 CHATKIT_API_URL=http://localhost:8000/chatkit
 ```
 
+### 4. Authentication Setup (Optional)
+
+If you want to enable authentication:
+
+1. **Generate Session Secret:**
+   ```bash
+   python -c "import secrets; print(secrets.token_urlsafe(32))"
+   ```
+
+2. **Configure OAuth (Optional):**
+   - **Google OAuth**: Get credentials from [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   - **GitHub OAuth**: Get credentials from [GitHub Developer Settings](https://github.com/settings/developers)
+
+3. **Run Auth Migrations:**
+   ```bash
+   cd backend
+   uv run python -c "from auth_backend.migrations.001_initial_auth import upgrade; upgrade()"
+   uv run python -c "from auth_backend.migrations.002_onboarding import upgrade; upgrade()"
+   ```
+
+4. **Session Cleanup (Production):**
+   Set up a daily cron job to clean expired sessions:
+   ```bash
+   0 2 * * * cd /path/to/project && uv run python -m auth_backend.scripts.cleanup_sessions
+   ```
+
+For detailed authentication documentation, see [`auth_backend/README.md`](auth_backend/README.md).
+
 ## API Endpoints
 
 ### Health Check
 ```
-GET /health
+GET /api/health
 ```
 
-### ChatKit Streaming
+### RAG Endpoints (Protected - Requires Auth + Onboarding)
+
+**ChatKit Streaming:**
 ```
 POST /chatkit
+Cookie: session_token=<token>
 Content-Type: application/json
 
 {
@@ -129,12 +201,42 @@ Content-Type: application/json
 }
 ```
 
-### Conversation Management
+**Conversation Management:**
 ```
 GET /api/conversations?session_id=<uuid>
+Cookie: session_token=<token>
+
 GET /api/conversations/<id>
 PATCH /api/conversations/<id>?title=New+Title
 DELETE /api/conversations/<id>
+```
+
+### Authentication Endpoints (Public)
+
+**Registration & Login:**
+```
+POST /auth/register
+POST /auth/login
+POST /auth/logout
+GET /auth/me
+POST /auth/refresh
+```
+
+**OAuth:**
+```
+GET /auth/oauth/google
+GET /auth/oauth/google/callback
+GET /auth/oauth/github
+GET /auth/oauth/github/callback
+```
+
+**Onboarding:**
+```
+GET /auth/onboarding/options
+POST /auth/onboarding/complete
+GET /auth/onboarding/profile
+PUT /auth/onboarding/profile
+GET /auth/onboarding/status
 ```
 
 ### Index Management
@@ -143,13 +245,24 @@ GET /api/index/status
 POST /api/index/rebuild
 ```
 
+For detailed API documentation with request/response schemas, see:
+- OpenAPI docs: `http://localhost:8000/docs`
+- Authentication API: See [`auth_backend/README.md`](auth_backend/README.md)
+
 ## Database Schema
 
 ### PostgreSQL (Neon)
 
+**RAG Tables:**
 - **conversations**: User chat sessions
 - **messages**: Individual messages (user/assistant)
 - **query_logs**: Analytics and debugging
+
+**Authentication Tables:**
+- **users**: User accounts (email, name, password_hash, onboarding_completed)
+- **auth_sessions**: Active sessions (token_hash, expires_at, last_used_at)
+- **oauth_accounts**: OAuth provider accounts (Google, GitHub)
+- **onboarding_profiles**: User onboarding data (user_type, interests, experience)
 
 ### Qdrant
 
@@ -162,8 +275,9 @@ POST /api/index/rebuild
 
 ## Maintenance
 
-### Cleanup Job (Cron/Scheduler)
+### Cleanup Jobs (Cron/Scheduler)
 
+**RAG Data Cleanup:**
 Run daily to remove expired data:
 
 ```bash
@@ -173,6 +287,17 @@ uv run python scripts/cleanup.py
 Deletes:
 - Conversations older than 7 days
 - Query logs older than 30 days
+
+**Session Cleanup:**
+Run daily to remove expired sessions:
+
+```bash
+uv run python -m auth_backend.scripts.cleanup_sessions
+```
+
+Deletes:
+- Sessions past absolute expiration (30 days)
+- Sessions past idle timeout (7 days)
 
 ### Re-indexing
 

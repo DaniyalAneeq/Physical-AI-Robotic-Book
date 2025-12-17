@@ -8,7 +8,6 @@ import TechStack from '@site/src/components/TechStack';
 import Stats from '@site/src/components/Stats';
 import LearningPath from '@site/src/components/LearningPath';
 import CallToAction from '@site/src/components/CallToAction';
-import FloatingChatButton from '@site/src/components/FloatingChatButton';
 
 function useTransparentNavbar() {
   useEffect(() => {
@@ -79,7 +78,6 @@ export default function Home(): ReactNode {
           }}
         />
       </main>
-      <FloatingChatButton />
     </Layout>
   );
 }

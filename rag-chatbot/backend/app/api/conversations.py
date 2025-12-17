@@ -10,14 +10,38 @@ from app.models.conversation import Conversation
 from app.models.database import get_db
 from app.models.message import Message
 
+# Import auth dependencies
+try:
+    from auth_backend.api.deps import get_current_user_with_onboarding as _get_user
+    from auth_backend.models.user import User as _User
+    AUTH_AVAILABLE = True
+except ImportError:
+    _get_user = None
+    _User = None
+    AUTH_AVAILABLE = False
+
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+# Conditional auth dependency
+async def maybe_get_user():
+    """Return user if auth is available, otherwise None."""
+    if AUTH_AVAILABLE and _get_user:
+        return await _get_user()
+    return None
+
+
 @router.get("/conversations")
-async def list_conversations(session_id: str, db: Session = Depends(get_db)):
+async def list_conversations(
+    session_id: str,
+    db: Session = Depends(get_db),
+    user=Depends(maybe_get_user),
+):
     """
     List all conversations for a session.
+
+    **Authentication Required:** Yes (must be authenticated with completed onboarding)
 
     Args:
         session_id: Browser session UUID
@@ -25,6 +49,10 @@ async def list_conversations(session_id: str, db: Session = Depends(get_db)):
 
     Returns:
         List of conversations with metadata
+
+    **Errors:**
+    - 401 Unauthorized: Not authenticated or invalid session
+    - 403 Forbidden: Authenticated but onboarding not completed
     """
     try:
         conversations = (

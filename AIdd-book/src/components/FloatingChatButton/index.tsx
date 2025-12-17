@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import Link from '@docusaurus/Link';
 import TextbookChat from '../TextbookChat';
+import { useAuth } from '@site/src/hooks/useAuth';
 import styles from './styles.module.css';
 
 export default function FloatingChatButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   return (
     <>
@@ -42,7 +45,44 @@ export default function FloatingChatButton() {
             </button>
           </div>
           <div className={styles.chatModalBody}>
-            <TextbookChat compact />
+            {!loading && !user ? (
+              <div className={styles.authRequired}>
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.lockIcon}
+                >
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <h4>Authentication Required</h4>
+                <p>Please log in to access the Textbook Assistant chatbot and get instant answers about Physical AI & Humanoid Robotics.</p>
+                <div className={styles.authButtons}>
+                  <Link
+                    to="/login"
+                    className="button button--primary button--md"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="button button--secondary button--md"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Create Account
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <TextbookChat compact />
+            )}
           </div>
         </div>
       )}

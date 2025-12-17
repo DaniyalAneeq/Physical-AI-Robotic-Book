@@ -1,0 +1,389 @@
+openapi: 3.1.0
+info:
+  title: Authentication API
+  description: Authentication endpoints for the Physical AI & Humanoid Robotics textbook platform
+  version: 1.0.0
+  contact:
+    name: API Support
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.example.com
+    description: Production server (placeholder)
+
+paths:
+  /auth/register:
+    post:
+      summary: Register new user
+      description: Create a new user account with email and password
+      operationId: registerUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User successfully registered and automatically logged in
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      summary: Login user
+      description: Authenticate user with email and password
+      operationId: loginUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: User successfully authenticated
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/logout:
+    post:
+      summary: Logout user
+      description: Destroy the current user session
+      operationId: logoutUser
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User successfully logged out
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/me:
+    get:
+      summary: Get current user
+      description: Get the currently authenticated user's information
+      operationId: getCurrentUser
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/refresh:
+    post:
+      summary: Refresh session
+      description: Refresh the current session token
+      operationId: refreshSession
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Session refreshed successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: New session cookie
+          content:
+            application/json:
+              schema:
+                type: object:
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '401':
+          description: Invalid or expired session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/oauth/google:
+    get:
+      summary: Initiate Google OAuth flow
+      description: Redirect user to Google OAuth consent screen
+      operationId: initiateGoogleOAuth
+      tags:
+        - OAuth
+      responses:
+        '302':
+          description: Redirect to Google OAuth consent page
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Google OAuth authorization URL
+
+  /auth/oauth/google/callback:
+    get:
+      summary: Google OAuth callback
+      description: Handle OAuth redirect from Google
+      operationId: handleGoogleCallback
+      tags:
+        - OAuth
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: OAuth authorization code
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+          description: CSRF protection state token
+      responses:
+        '302':
+          description: Redirect to frontend with auth success
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie
+            Location:
+              schema:
+                type: string
+              description: Frontend redirect URL
+        '400':
+          description: Invalid OAuth callback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/oauth/github:
+    get:
+      summary: Initiate GitHub OAuth flow
+      description: Redirect user to GitHub OAuth consent screen
+      operationId: initiateGitHubOAuth
+      tags:
+        - OAuth
+      responses:
+        '302':
+          description: Redirect to GitHub OAuth consent page
+          headers:
+            Location:
+              schema:
+                type: string
+              description: GitHub OAuth authorization URL
+
+  /auth/oauth/github/callback:
+    get:
+      summary: GitHub OAuth callback
+      description: Handle OAuth redirect from GitHub
+      operationId: handleGitHubCallback
+      tags:
+        - OAuth
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: OAuth authorization code
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+          description: CSRF protection state token
+      responses:
+        '302':
+          description: Redirect to frontend with auth success
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie
+            Location:
+              schema:
+                type: string
+              description: Frontend redirect URL
+        '400':
+          description: Invalid OAuth callback
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_token
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - password_confirm
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 128
+          example: "SecurePassword123!"
+        password_confirm:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 128
+          example: "SecurePassword123!"
+        name:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "John Doe"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        onboarding_required:
+          type: boolean
+          description: Whether user needs to complete onboarding
+          example: true
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-1234-5678-9012-abcdef123456"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        name:
+          type: string
+          nullable: true
+          example: "John Doe"
+        email_verified:
+          type: boolean
+          example: false
+        onboarding_completed:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-16T10:00:00Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Invalid credentials"
+        code:
+          type: string
+          description: Error code for client-side handling
+          example: "INVALID_CREDENTIALS"
+          nullable: true

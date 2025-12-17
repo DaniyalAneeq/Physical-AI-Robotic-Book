@@ -6,7 +6,7 @@ import time
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sse_starlette.sse import EventSourceResponse
 
 from app.models.conversation import Conversation
@@ -15,8 +15,26 @@ from app.models.message import Message
 from app.models.query_log import QueryLog
 from app.services.agent import get_agent_response_stream
 
+# Import auth dependencies
+try:
+    from auth_backend.api.deps import get_current_user_with_onboarding as _get_user
+    from auth_backend.models.user import User as _User
+    AUTH_AVAILABLE = True
+except ImportError:
+    _get_user = None
+    _User = None
+    AUTH_AVAILABLE = False
+
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+# Conditional auth dependency
+async def maybe_get_user():
+    """Return user if auth is available, otherwise None."""
+    if AUTH_AVAILABLE and _get_user:
+        return await _get_user()
+    return None
 
 
 async def chatkit_stream_generator(
@@ -153,9 +171,14 @@ async def chatkit_stream_generator(
 
 
 @router.post("/chatkit")
-async def chatkit_endpoint(request: Request):
+async def chatkit_endpoint(
+    request: Request,
+    user=Depends(maybe_get_user),
+):
     """
     ChatKit protocol endpoint for streaming chat responses.
+
+    **Authentication Required:** Yes (must be authenticated with completed onboarding)
 
     Accepts ChatKit protocol requests and returns SSE stream with agent responses.
 
@@ -168,6 +191,11 @@ async def chatkit_endpoint(request: Request):
             "module_filter": "module-1"  // optional
         }
     }
+
+    **Errors:**
+    - 401 Unauthorized: Not authenticated or invalid session
+    - 403 Forbidden: Authenticated but onboarding not completed
+    - 400 Bad Request: Invalid request body
     """
     try:
         body = await request.json()
