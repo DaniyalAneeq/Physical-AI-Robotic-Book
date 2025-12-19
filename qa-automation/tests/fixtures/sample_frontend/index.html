@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Frontend - QA Test App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .broken-layout {
+            /* Intentionally broken CSS */
+            position: absolute;
+            left: -9999px;
+        }
+        img.missing-alt {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to QA Test App</h1>
+
+    <!-- Issue 1: Missing alt text on image -->
+    <img class="missing-alt" src="https://via.placeholder.com/100">
+
+    <!-- Issue 2: Broken layout element -->
+    <div class="broken-layout">
+        <p>This content is hidden off-screen</p>
+    </div>
+
+    <!-- Issue 3: Console error trigger -->
+    <button onclick="causeError()">Click to cause error</button>
+
+    <script>
+        // Issue 4: JavaScript error
+        function causeError() {
+            // Intentional error - undefined variable
+            console.log(undefinedVariable);
+        }
+
+        // Issue 5: Console warning
+        console.warn("This is a test warning");
+    </script>
+</body>
+</html>

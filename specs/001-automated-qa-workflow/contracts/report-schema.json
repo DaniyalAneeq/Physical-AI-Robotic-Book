@@ -1,0 +1,277 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/report.schema.json",
+  "title": "WorkflowReport",
+  "description": "Complete workflow execution report",
+  "type": "object",
+  "required": ["workflow_id", "start_time", "status", "summary"],
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "Unique workflow execution identifier"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Workflow start timestamp (ISO 8601)"
+    },
+    "end_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Workflow end timestamp (ISO 8601)"
+    },
+    "duration_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total workflow duration in seconds"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "running", "completed", "failed", "cancelled"],
+      "description": "Workflow execution status"
+    },
+    "deployment_ready": {
+      "type": "boolean",
+      "description": "Whether application is ready for deployment"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_issues_detected"],
+      "properties": {
+        "total_issues_detected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical_issues": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "high_issues": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "medium_issues": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "low_issues": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "auto_fixed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_required": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "regressions_detected": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "description": "Summary statistics"
+    },
+    "phases": {
+      "type": "object",
+      "properties": {
+        "detection": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "issues_found": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tests_passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tests_failed": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "root_causes_identified": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "resolution": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "fixes_applied": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "fixes_failed": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "retest": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "regressions_found": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "reporting": {
+          "type": "object",
+          "properties": {
+            "duration_seconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "description": "Results for each workflow phase"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "$ref": "issue-schema.json"
+      },
+      "description": "All detected issues"
+    },
+    "resolution_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "issue_id", "action_type", "outcome"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "issue_id": {
+            "type": "string"
+          },
+          "action_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "action_type": {
+            "type": "string",
+            "enum": ["auto_fix", "auto_fix_failed", "manual_guidance"]
+          },
+          "applied_changes": {
+            "type": "string"
+          },
+          "guidance": {
+            "type": "string"
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": ["passed", "failed", "not_verified"]
+          },
+          "outcome": {
+            "type": "string",
+            "enum": ["fixed", "manual_required", "rollback"]
+          }
+        }
+      },
+      "description": "All resolution actions"
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "screenshots": {
+          "type": "string",
+          "description": "Path to screenshots directory"
+        },
+        "traces": {
+          "type": "string",
+          "description": "Path to traces directory"
+        },
+        "logs": {
+          "type": "string",
+          "description": "Path to log files"
+        },
+        "report_html": {
+          "type": "string",
+          "description": "Path to HTML dashboard"
+        }
+      },
+      "description": "Paths to all artifacts"
+    },
+    "config": {
+      "$ref": "workflow-config-schema.json",
+      "description": "Configuration used for this workflow"
+    }
+  },
+  "examples": [
+    {
+      "workflow_id": "wf-20251217-143022",
+      "start_time": "2025-12-17T14:30:22Z",
+      "end_time": "2025-12-17T14:58:15Z",
+      "duration_seconds": 1673,
+      "status": "completed",
+      "deployment_ready": true,
+      "summary": {
+        "total_issues_detected": 42,
+        "critical_issues": 0,
+        "high_issues": 8,
+        "medium_issues": 18,
+        "low_issues": 16,
+        "auto_fixed": 28,
+        "manual_required": 12,
+        "regressions_detected": 1
+      },
+      "phases": {
+        "detection": {
+          "duration_seconds": 832,
+          "issues_found": 42,
+          "tests_passed": 148,
+          "tests_failed": 2
+        },
+        "analysis": {
+          "duration_seconds": 87,
+          "root_causes_identified": 38
+        },
+        "resolution": {
+          "duration_seconds": 241,
+          "fixes_applied": 28,
+          "fixes_failed": 2
+        },
+        "retest": {
+          "duration_seconds": 498,
+          "regressions_found": 1
+        },
+        "reporting": {
+          "duration_seconds": 15
+        }
+      },
+      "artifacts": {
+        "screenshots": "artifacts/screenshots/wf-20251217-143022/",
+        "traces": "artifacts/traces/wf-20251217-143022/",
+        "logs": "artifacts/logs/workflow-wf-20251217-143022.log",
+        "report_html": "reports/dashboard-wf-20251217-143022.html"
+      }
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+# Frontend test scenarios for AIdd-book website
+scenarios:
+  - id: homepage-load
+    type: frontend
+    name: Homepage Load
+    description: Test that the homepage loads correctly
+    url: /Physical-AI-Robotic-Book/
+    steps:
+      - action: wait_for_selector
+        selector: h1
+        timeout: 5000
+      - action: screenshot
+        name: homepage
+
+  - id: module1-page
+    type: frontend
+    name: Module 1 - ROS 2 Fundamentals
+    description: Test Module 1 documentation page
+    url: /Physical-AI-Robotic-Book/docs/module-1/intro
+    steps:
+      - action: wait_for_selector
+        selector: article
+        timeout: 5000
+      - action: screenshot
+        name: module1
+
+  - id: module2-page
+    type: frontend
+    name: Module 2 - Digital Twin
+    description: Test Module 2 documentation page
+    url: /Physical-AI-Robotic-Book/docs/module-2/intro
+    steps:
+      - action: wait_for_selector
+        selector: article
+        timeout: 5000
+      - action: screenshot
+        name: module2
+
+  - id: navigation-test
+    type: frontend
+    name: Navigation Menu
+    description: Test that navigation menu works
+    url: /Physical-AI-Robotic-Book/
+    steps:
+      - action: wait_for_selector
+        selector: nav
+        timeout: 5000
+      - action: screenshot
+        name: navigation
+
+  - id: search-functionality
+    type: frontend
+    name: Search Functionality
+    description: Test search feature if present
+    url: /Physical-AI-Robotic-Book/
+    steps:
+      - action: wait_for_selector
+        selector: body
+        timeout: 5000
+      - action: screenshot
+        name: search
+
+  - id: responsive-design
+    type: frontend
+    name: Responsive Design Check
+    description: Test responsive design at different viewports
+    url: /Physical-AI-Robotic-Book/
+    viewport:
+      width: 375
+      height: 667
+    steps:
+      - action: wait_for_selector
+        selector: body
+        timeout: 5000
+      - action: screenshot
+        name: mobile-view

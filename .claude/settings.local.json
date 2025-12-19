@@ -25,7 +25,13 @@
       "Bash(.specify/scripts/bash/setup-plan.sh:*)",
       "Bash(uv init:*)",
       "mcp__better-auth__search",
-      "mcp__better-auth__chat"
+      "mcp__better-auth__chat",
+      "Bash(cat:*)",
+      "Bash(python3:*)",
+      "Bash(pip install:*)",
+      "Bash(source:*)",
+      "Bash(python -m pytest:*)",
+      "mcp__playwright__browser_install"
     ],
     "deny": [],
     "ask": []

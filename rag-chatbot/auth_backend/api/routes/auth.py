@@ -1,5 +1,6 @@
 """Authentication routes: register, login, logout."""
 
+import logging
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
@@ -13,8 +14,11 @@ from auth_backend.schemas.auth import AuthResponse, LoginRequest, RegisterReques
 from auth_backend.schemas.session import SessionResponse
 from auth_backend.schemas.user import UserResponse
 from auth_backend.services.password import password_service
-from auth_backend.services.session import SessionService
+from auth_backend.services.session import SessionService, get_cookie_attributes
 from auth_backend.api.deps import get_current_user, get_current_session_and_user
+
+# Configure logger for authentication events
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Authentication"])
 
@@ -87,14 +91,13 @@ async def register(
         db, user.id, ip_address, user_agent
     )
 
-    # Set session cookie
+    # Set session cookie with environment-specific attributes
+    cookie_attrs = get_cookie_attributes(settings.secure_cookies, settings.same_site_cookies)
     response.set_cookie(
         key=settings.session_cookie_name,
         value=plain_token,
-        httponly=True,
-        secure=settings.secure_cookies,
-        samesite=settings.same_site_cookies,
         max_age=settings.session_max_age_days * 24 * 60 * 60,  # Convert days to seconds
+        **cookie_attrs,
     )
 
     return AuthResponse(
@@ -145,12 +148,20 @@ async def login(
 
     # Check if user exists and password is correct
     if not user or not user.password_hash:
+        logger.warning(
+            f"Login attempt failed: user not found or no password hash",
+            extra={"email": request_data.email, "ip": request.client.host if request.client else None}
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
         )
 
     if not password_service.verify_password(request_data.password, user.password_hash):
+        logger.warning(
+            f"Login attempt failed: invalid password",
+            extra={"email": request_data.email, "ip": request.client.host if request.client else None, "user_id": str(user.id)}
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
@@ -165,14 +176,13 @@ async def login(
         db, user.id, ip_address, user_agent
     )
 
-    # Set session cookie
+    # Set session cookie with environment-specific attributes
+    cookie_attrs = get_cookie_attributes(settings.secure_cookies, settings.same_site_cookies)
     response.set_cookie(
         key=settings.session_cookie_name,
         value=plain_token,
-        httponly=True,
-        secure=settings.secure_cookies,
-        samesite=settings.same_site_cookies,
         max_age=settings.session_max_age_days * 24 * 60 * 60,
+        **cookie_attrs,
     )
 
     return AuthResponse(
@@ -213,12 +223,11 @@ async def logout(
     session_service = SessionService(settings.session_secret)
     await session_service.revoke_session(db, session.id)
 
-    # Clear session cookie
+    # Clear session cookie with matching attributes
+    cookie_attrs = get_cookie_attributes(settings.secure_cookies, settings.same_site_cookies)
     response.delete_cookie(
         key=settings.session_cookie_name,
-        httponly=True,
-        secure=settings.secure_cookies,
-        samesite=settings.same_site_cookies,
+        **cookie_attrs,
     )
 
     return {"message": "Logged out successfully."}
@@ -368,5 +377,87 @@ async def get_session(
         user=UserResponse.model_validate(user),
         session=SessionResponse.model_validate(session),
         message="Session retrieved successfully.",
+        onboarding_required=not user.onboarding_completed,
+    )
+
+
+@router.post("/session-from-token", response_model=AuthResponse)
+async def create_session_from_token(
+    request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db),
+) -> AuthResponse:
+    """
+    Exchange a session token for an HttpOnly cookie.
+
+    Used by OAuth callback flow to establish session after redirect.
+    Frontend receives token in URL fragment and calls this endpoint to set the cookie.
+
+    **Request Body:**
+    - token: Session token from OAuth callback
+
+    **Response:**
+    - Sets HttpOnly session cookie
+    - Returns user and session information
+
+    **Errors:**
+    - 401 Unauthorized: Invalid or expired token
+
+    Example:
+        ```json
+        POST /auth/session-from-token
+        {
+          "token": "session_token_from_oauth"
+        }
+        ```
+    """
+    # Parse request body
+    try:
+        body = await request.json()
+        token = body.get("token")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid request body. Expected JSON with 'token' field.",
+        )
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing 'token' field in request body.",
+        )
+
+    # To prevent session fixation, we refresh the session:
+    # this invalidates the single-use token and creates a new session.
+    session_service = SessionService(settings.session_secret)
+    ip_address = request.client.host if request.client else None
+    user_agent = request.headers.get("user-agent")
+
+    result = await session_service.refresh_session(
+        db, token, ip_address, user_agent
+    )
+
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired session token.",
+        )
+
+    session, new_plain_token = result
+    user = await db.get(User, session.user_id) # We need to fetch the user separately
+
+    # Set the new session cookie
+    cookie_attrs = get_cookie_attributes(settings.secure_cookies, settings.same_site_cookies)
+    response.set_cookie(
+        key=settings.session_cookie_name,
+        value=new_plain_token,
+        max_age=settings.session_max_age_days * 24 * 60 * 60,
+        **cookie_attrs,
+    )
+
+    return AuthResponse(
+        user=UserResponse.model_validate(user),
+        session=SessionResponse.model_validate(session),
+        message="Session established successfully.",
         onboarding_required=not user.onboarding_completed,
     )

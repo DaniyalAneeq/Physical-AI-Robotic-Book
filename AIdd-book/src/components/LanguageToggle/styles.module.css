@@ -1,0 +1,114 @@
+/**
+ * Language Toggle Component Styles
+ */
+
+.languageToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.languageSelect {
+  appearance: none;
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  color: var(--ifm-font-color-base);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.375rem 2rem 0.375rem 0.75rem;
+  transition: all 0.2s ease;
+  min-width: 120px;
+
+  /* Custom dropdown arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 12px;
+}
+
+.languageSelect:hover:not(:disabled) {
+  border-color: var(--ifm-color-primary);
+  background-color: var(--ifm-color-primary-lightest);
+}
+
+.languageSelect:focus {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 2px var(--ifm-color-primary-lightest);
+}
+
+.languageSelect:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.languageSelect option {
+  background-color: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  padding: 0.5rem;
+}
+
+.loadingIndicator {
+  font-size: 1.2rem;
+  color: var(--ifm-color-primary);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .languageSelect {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ccc' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+}
+
+/* RTL adjustments */
+[dir='rtl'] .languageToggle {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir='rtl'] .languageSelect {
+  padding: 0.375rem 0.75rem 0.375rem 2rem;
+  background-position: left 0.5rem center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 996px) {
+  .languageToggle {
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+
+  .languageSelect {
+    width: 100%;
+  }
+}
+
+/* Accessibility - High contrast mode */
+@media (prefers-contrast: high) {
+  .languageSelect {
+    border-width: 2px;
+  }
+
+  .languageSelect:focus {
+    box-shadow: 0 0 0 3px var(--ifm-color-primary);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .languageSelect,
+  .loadingIndicator {
+    transition: none;
+    animation: none;
+  }
+}

@@ -1,0 +1,98 @@
+# Frontend Test Scenarios
+# Define browser-based test cases for the application
+
+scenarios:
+  - id: "homepage-load"
+    name: "Homepage loads successfully"
+    enabled: true
+    type: "frontend"
+    url: "http://localhost:3000"
+    auth_required: false
+    steps:
+      - action: "wait_for_selector"
+        selector: "h1"
+        timeout: 5000
+      - action: "screenshot"
+        value: "homepage"
+    assertions:
+      - selector: "h1"
+        text_contains: "Welcome"
+    performance_thresholds:
+      max_page_load_ms: 3000
+
+  - id: "dashboard-auth"
+    name: "Dashboard requires authentication"
+    enabled: true
+    type: "frontend"
+    url: "http://localhost:3000/dashboard"
+    auth_required: true
+    auth_method: "better_auth"
+    steps:
+      - action: "wait_for_selector"
+        selector: ".dashboard"
+        timeout: 10000
+      - action: "screenshot"
+        value: "dashboard"
+    assertions:
+      - selector: ".dashboard"
+    performance_thresholds:
+      max_page_load_ms: 5000
+
+  - id: "navigation-test"
+    name: "Navigation menu works correctly"
+    enabled: true
+    type: "frontend"
+    url: "http://localhost:3000"
+    auth_required: false
+    steps:
+      - action: "wait_for_selector"
+        selector: "nav"
+        timeout: 5000
+      - action: "click"
+        selector: "nav a[href='/about']"
+      - action: "wait_for_selector"
+        selector: ".about-page"
+        timeout: 5000
+      - action: "screenshot"
+        value: "about-page"
+    assertions:
+      - selector: ".about-page"
+
+  - id: "form-validation"
+    name: "Contact form validation works"
+    enabled: true
+    type: "frontend"
+    url: "http://localhost:3000/contact"
+    auth_required: false
+    steps:
+      - action: "wait_for_selector"
+        selector: "form.contact-form"
+        timeout: 5000
+      - action: "fill"
+        selector: "[name='email']"
+        value: "invalid-email"
+      - action: "click"
+        selector: "button[type='submit']"
+      - action: "wait_for_selector"
+        selector: ".error-message"
+        timeout: 3000
+      - action: "screenshot"
+        value: "form-validation-error"
+    assertions:
+      - selector: ".error-message"
+        text_contains: "valid email"
+
+  - id: "accessibility-check"
+    name: "Accessibility standards check"
+    enabled: true
+    type: "frontend"
+    url: "http://localhost:3000"
+    auth_required: false
+    steps:
+      - action: "wait_for_selector"
+        selector: "body"
+        timeout: 5000
+      - action: "screenshot"
+        value: "accessibility-check"
+    assertions:
+      - selector: "img"  # Check all images have alt text

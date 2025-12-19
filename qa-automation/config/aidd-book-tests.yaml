@@ -1,0 +1,46 @@
+# Configuration for testing AIdd-book website
+frontend_url: http://localhost:3000
+backend_url: http://localhost:8000
+browser: chromium
+headless: true
+parallel: false  # Disable parallel for simpler testing
+max_concurrent: 5
+
+# Skip frontend tests (Playwright dependencies missing)
+skip_frontend: true
+
+# Authentication (Better Auth)
+authentication:
+  method: better_auth
+  enabled: false  # Disable auth for initial testing
+
+# Safety settings
+safety:
+  dry_run: false
+  require_approval: false
+  backup_enabled: true
+  validate_syntax: true
+  run_tests: false  # Disable test running for now
+  max_retest_iterations: 2
+  rollback_on_failure: true
+  enable_retest: false  # Disable retest for initial run
+
+# Performance thresholds
+performance:
+  max_page_load_ms: 5000
+  max_api_response_ms: 2000
+  min_bundle_size_kb: 0
+  max_bundle_size_kb: 5000
+
+# Output configuration
+output:
+  artifacts_dir: artifacts
+  reports_dir: reports
+  screenshots_enabled: true
+  traces_enabled: true
+  logs_enabled: true
+
+# Scenario files
+scenarios:
+  frontend: config/aidd-book-frontend-tests.yaml
+  backend: config/aidd-book-backend-tests.yaml

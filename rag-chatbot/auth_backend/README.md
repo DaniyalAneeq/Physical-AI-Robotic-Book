@@ -341,17 +341,25 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:8000
 
 ### Cookie Configuration
 
-For development (HTTP):
+For development (HTTP - localhost):
 ```env
-COOKIE_SECURE=false
-COOKIE_SAMESITE=lax
+SECURE_COOKIES=false
+SAME_SITE_COOKIES=lax
 ```
 
-For production (HTTPS):
+For production (HTTPS - cross-origin):
 ```env
-COOKIE_SECURE=true
-COOKIE_SAMESITE=strict
+SECURE_COOKIES=true
+SAME_SITE_COOKIES=none  # Required for cross-origin requests (GitHub Pages ↔ Backend)
 ```
+
+**CRITICAL**: Production with `SameSite=None` REQUIRES:
+- `SECURE_COOKIES=true`
+- Backend served over HTTPS
+- Frontend URL in `CORS_ORIGINS`
+
+See [DEPLOYMENT.md](../../specs/001-fix-auth/DEPLOYMENT.md) for detailed configuration guide.
+See [debugging.md](../../specs/001-fix-auth/debugging.md) for troubleshooting cookie issues.
 
 ## Database Schema
 
@@ -405,7 +413,7 @@ COOKIE_SAMESITE=strict
 - HMAC-SHA256 token hashing
 - HttpOnly cookies (not accessible to JavaScript)
 - Secure flag in production (HTTPS only)
-- SameSite=Lax (CSRF protection)
+- SameSite=Lax (development), SameSite=None (production cross-origin)
 - 30-day absolute expiration
 - 7-day sliding idle timeout
 

@@ -1,0 +1,243 @@
+/**
+ * RTL (Right-to-Left) Layout Overrides for Urdu Locale
+ *
+ * This stylesheet provides specific overrides for RTL layout to ensure
+ * code blocks, diagrams, and technical content remain LTR (left-to-right)
+ * within the overall RTL layout.
+ */
+
+/* ============================================
+   Code Blocks - MUST remain LTR
+   ============================================ */
+
+[dir="rtl"] pre,
+[dir="rtl"] code,
+[dir="rtl"] .prism-code,
+[dir="rtl"] .language-*,
+[dir="rtl"] .token-line {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: embed;
+}
+
+/* Code block line numbers should align left */
+[dir="rtl"] .prism-code .token-line::before {
+  text-align: left !important;
+}
+
+/* Inline code within RTL text */
+[dir="rtl"] p code,
+[dir="rtl"] li code,
+[dir="rtl"] td code {
+  direction: ltr !important;
+  display: inline-block;
+  unicode-bidi: embed;
+}
+
+/* ============================================
+   Diagrams and Images
+   ============================================ */
+
+[dir="rtl"] .diagram-container,
+[dir="rtl"] .mermaid,
+[dir="rtl"] svg {
+  direction: ltr !important;
+}
+
+/* Image captions can remain RTL */
+[dir="rtl"] figcaption {
+  direction: rtl;
+  text-align: right;
+}
+
+/* ============================================
+   Tables - Keep technical tables LTR
+   ============================================ */
+
+[dir="rtl"] table.technical-table,
+[dir="rtl"] table[class*="api"],
+[dir="rtl"] table[class*="code"] {
+  direction: ltr !important;
+}
+
+[dir="rtl"] table.technical-table th,
+[dir="rtl"] table.technical-table td {
+  text-align: left !important;
+}
+
+/* ============================================
+   Math Equations - Keep LTR
+   ============================================ */
+
+[dir="rtl"] .math,
+[dir="rtl"] .katex,
+[dir="rtl"] .math-display {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* ============================================
+   File Paths and URLs - Keep LTR
+   ============================================ */
+
+[dir="rtl"] .filepath,
+[dir="rtl"] .url,
+[dir="rtl"] a[href^="http"],
+[dir="rtl"] .command-line {
+  direction: ltr !important;
+  display: inline-block;
+  unicode-bidi: embed;
+}
+
+/* ============================================
+   Terminal/Console Output - Keep LTR
+   ============================================ */
+
+[dir="rtl"] .terminal,
+[dir="rtl"] .console,
+[dir="rtl"] .output,
+[dir="rtl"] pre.command {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* ============================================
+   API Documentation Tables
+   ============================================ */
+
+[dir="rtl"] .api-table,
+[dir="rtl"] .params-table,
+[dir="rtl"] .returns-table {
+  direction: ltr !important;
+}
+
+/* ============================================
+   Navigation Elements (RTL-aware but adjusted)
+   ============================================ */
+
+/* Sidebar navigation should be RTL */
+[dir="rtl"] .menu__link {
+  text-align: right;
+}
+
+/* Breadcrumbs - RTL with proper separators */
+[dir="rtl"] .breadcrumbs__link::after {
+  content: "◀" !important;
+  margin-left: 0.3rem;
+  margin-right: 0;
+}
+
+/* Pagination arrows */
+[dir="rtl"] .pagination-nav__link--prev .pagination-nav__label::before {
+  content: "←";
+}
+
+[dir="rtl"] .pagination-nav__link--next .pagination-nav__label::after {
+  content: "→";
+}
+
+/* ============================================
+   Search Box - Keep input LTR for queries
+   ============================================ */
+
+[dir="rtl"] .navbar__search-input {
+  direction: ltr;
+  text-align: left;
+}
+
+/* ============================================
+   Admonitions (Note, Tip, Warning, etc.)
+   ============================================ */
+
+/* Admonition titles are RTL */
+[dir="rtl"] .admonition-heading {
+  text-align: right;
+}
+
+/* Code within admonitions stays LTR */
+[dir="rtl"] .admonition code,
+[dir="rtl"] .admonition pre {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+[dir="rtl"] .footer__links {
+  text-align: right;
+}
+
+[dir="rtl"] .footer__copyright {
+  text-align: right;
+}
+
+/* ============================================
+   Mobile Responsiveness
+   ============================================ */
+
+@media (max-width: 996px) {
+  /* Mobile menu should be RTL */
+  [dir="rtl"] .navbar-sidebar {
+    left: auto;
+    right: 0;
+  }
+
+  /* Mobile sidebar animation */
+  [dir="rtl"] .navbar-sidebar--show {
+    transform: translateX(0);
+  }
+
+  [dir="rtl"] .navbar-sidebar {
+    transform: translateX(100%);
+  }
+}
+
+/* ============================================
+   Accessibility - Screen Readers
+   ============================================ */
+
+[dir="rtl"] .sr-only {
+  /* Screen reader text maintains proper direction */
+  direction: inherit;
+}
+
+/* ============================================
+   Language Toggle Component
+   ============================================ */
+
+[dir="rtl"] .language-toggle {
+  /* Language toggle positioning adjustments for RTL */
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* ============================================
+   Special Cases - Technical Content
+   ============================================ */
+
+/* ROS 2 topics and service names */
+[dir="rtl"] .ros-topic,
+[dir="rtl"] .ros-service,
+[dir="rtl"] .ros-node {
+  direction: ltr !important;
+  display: inline-block;
+  font-family: monospace;
+}
+
+/* Python/C++ identifiers */
+[dir="rtl"] .identifier,
+[dir="rtl"] .function-name,
+[dir="rtl"] .class-name {
+  direction: ltr !important;
+  display: inline-block;
+  font-family: monospace;
+}
+
+/* Git commands and output */
+[dir="rtl"] .git-command,
+[dir="rtl"] .git-output {
+  direction: ltr !important;
+  text-align: left !important;
+}

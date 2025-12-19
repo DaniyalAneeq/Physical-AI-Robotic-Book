@@ -218,6 +218,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 - Qdrant Cloud (vectors), Neon Serverless Postgres (sessions) (003-rag-chatbot)
 - Python 3.11+ + FastAPI 0.115+, Better Auth (authentication framework), psycopg3 (Postgres adapter), Pydantic (validation) (001-auth-refactor)
 - Neon Serverless Postgres (existing shared database instance) (001-auth-refactor)
+- Python 3.11+ + Playwright (browser automation), FastAPI (test orchestration), httpx (API testing), Pydantic (data validation), PyYAML (configuration), pytest (test framework) (001-automated-qa-workflow)
+- JSON files for issue tracking, YAML for configuration, local filesystem for screenshots/traces/logs (001-automated-qa-workflow)
 
 ## Recent Changes
 - 002-ai-robotics-textbook: Added Python 3.x (latest stable recommended), C# (for Unity), Docusaurus (latest stable) + ROS 2 Foxy/Humble, Gazebo, Unity Robotics SDK, NVIDIA Isaac Sim, `rclpy`, URDF, Gazebo SDF, Unity C#, Isaac Sim API (Omniverse Kit/Python API), OpenCV, NLP libraries (e.g., spaCy, NLTK), LLM APIs

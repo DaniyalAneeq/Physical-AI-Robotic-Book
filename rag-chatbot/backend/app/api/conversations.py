@@ -12,11 +12,11 @@ from app.models.message import Message
 
 # Import auth dependencies
 try:
-    from auth_backend.api.deps import get_current_user_with_onboarding as _get_user
+    from auth_backend.api.deps import get_current_user_optional
     from auth_backend.models.user import User as _User
     AUTH_AVAILABLE = True
 except ImportError:
-    _get_user = None
+    get_current_user_optional = None
     _User = None
     AUTH_AVAILABLE = False
 
@@ -24,12 +24,14 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-# Conditional auth dependency
-async def maybe_get_user():
-    """Return user if auth is available, otherwise None."""
-    if AUTH_AVAILABLE and _get_user:
-        return await _get_user()
-    return None
+# Conditional auth dependency - use get_current_user_optional which returns None for unauthenticated
+# This is injected properly by FastAPI's dependency system
+if AUTH_AVAILABLE:
+    maybe_get_user = get_current_user_optional
+else:
+    async def maybe_get_user():
+        """Fallback when auth is not available."""
+        return None
 
 
 @router.get("/conversations")

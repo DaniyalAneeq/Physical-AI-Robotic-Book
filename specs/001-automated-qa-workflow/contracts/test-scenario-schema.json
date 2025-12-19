@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/test-scenario.schema.json",
+  "title": "TestScenario",
+  "description": "Defines a specific test case to execute",
+  "type": "object",
+  "required": ["id", "name", "type"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique scenario identifier (kebab-case)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 200,
+      "description": "Human-readable scenario name"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["frontend", "backend", "performance"],
+      "description": "Type of test scenario"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether scenario is enabled"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL for frontend tests or API endpoint for backend tests"
+    },
+    "method": {
+      "type": "string",
+      "enum": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
+      "description": "HTTP method for backend tests"
+    },
+    "auth_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether authentication is required"
+    },
+    "auth_method": {
+      "type": "string",
+      "enum": ["none", "better_auth", "oauth2", "jwt_bearer", "session_cookie"],
+      "default": "none",
+      "description": "Authentication method to use"
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "HTTP headers for backend tests"
+    },
+    "body": {
+      "type": "object",
+      "description": "Request body for backend tests"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action"],
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Action type: wait_for_selector, click, fill, screenshot, etc."
+          },
+          "selector": {
+            "type": "string",
+            "description": "CSS selector for element"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value for fill actions"
+          },
+          "timeout": {
+            "type": "integer",
+            "default": 5000,
+            "description": "Timeout in milliseconds"
+          }
+        }
+      },
+      "description": "Steps for frontend tests"
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string"
+          },
+          "text_contains": {
+            "type": "string"
+          },
+          "status_code": {
+            "type": "integer"
+          },
+          "response_schema": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Assertions to verify in test"
+    },
+    "performance_thresholds": {
+      "type": "object",
+      "properties": {
+        "max_response_time_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_page_load_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_bundle_size_kb": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "description": "Performance thresholds"
+    }
+  },
+  "examples": [
+    {
+      "id": "dashboard-auth",
+      "name": "Dashboard requires authentication",
+      "type": "frontend",
+      "enabled": true,
+      "url": "http://localhost:3000/dashboard",
+      "auth_required": true,
+      "auth_method": "better_auth",
+      "steps": [
+        {
+          "action": "wait_for_selector",
+          "selector": ".dashboard",
+          "timeout": 5000
+        },
+        {
+          "action": "screenshot",
+          "value": "dashboard"
+        }
+      ],
+      "assertions": [
+        {
+          "selector": ".dashboard",
+          "text_contains": "Welcome"
+        }
+      ],
+      "performance_thresholds": {
+        "max_page_load_ms": 3000
+      }
+    }
+  ]
+}

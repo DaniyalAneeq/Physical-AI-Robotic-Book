@@ -45,6 +45,9 @@ class User(Base, TimestampMixin):
     onboarding_completed: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default="false", index=True
     )
+    preferred_locale: Mapped[str] = mapped_column(
+        String(5), nullable=False, default="en", server_default="en", index=True
+    )
 
     # Relationships
     sessions: Mapped[list["Session"]] = relationship(

@@ -9,6 +9,7 @@
 /* Import design system foundations */
 @import './tokens.css';
 @import './animations.css';
+@import './rtl.css';
 
 /* ========================================
  * INFIMA VARIABLE MAPPINGS (Light Theme)

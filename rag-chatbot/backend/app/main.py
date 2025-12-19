@@ -1,13 +1,20 @@
 """FastAPI application entry point for RAG Chatbot."""
 
 import logging
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
+
+# Add parent directory to Python path to find auth_backend module (MUST be before other imports)
+parent_dir = Path(__file__).resolve().parent.parent.parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.api import chatkit, conversations, health, index, sessions
+from app.api import chatkit, content, conversations, health, index, sessions, user
 from app.config import get_settings
 
 settings = get_settings()
@@ -21,13 +28,6 @@ logger = logging.getLogger(__name__)
 
 # Import auth routers from auth_backend
 try:
-    import sys
-    from pathlib import Path
-
-    # Add parent directory to Python path to find auth_backend module
-    parent_dir = Path(__file__).resolve().parent.parent.parent
-    if str(parent_dir) not in sys.path:
-        sys.path.insert(0, str(parent_dir))
 
     from auth_backend.api.routes import auth, oauth, onboarding
     AUTH_AVAILABLE = True
@@ -68,8 +68,8 @@ app.add_middleware(
     secret_key=settings.session_secret,
     session_cookie="oauth_state",
     max_age=600,  # OAuth state expires in 10 minutes
-    same_site="lax",
-    https_only=settings.cookie_secure,
+    same_site="none",
+    https_only=settings.secure_cookies,
 )
 
 # Configure CORS
@@ -87,6 +87,8 @@ app.include_router(chatkit.router, tags=["ChatKit"])
 app.include_router(sessions.router, prefix="/api", tags=["Sessions"])  # Frontend-compatible endpoints
 app.include_router(conversations.router, prefix="/api", tags=["Conversations"])
 app.include_router(index.router, prefix="/api", tags=["Indexing"])
+app.include_router(user.router, tags=["User"])
+app.include_router(content.router, tags=["Content"])
 
 # Include auth routers if available (with /auth prefix for authentication endpoints)
 if AUTH_AVAILABLE:

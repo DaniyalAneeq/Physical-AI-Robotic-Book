@@ -1,0 +1,181 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/workflow-config.schema.json",
+  "title": "WorkflowConfig",
+  "description": "Configuration for QA workflow execution",
+  "type": "object",
+  "required": ["frontend_url", "backend_url"],
+  "properties": {
+    "frontend_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Base URL for frontend application"
+    },
+    "backend_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Base URL for backend API"
+    },
+    "browser": {
+      "type": "string",
+      "enum": ["chromium", "firefox", "webkit"],
+      "default": "chromium",
+      "description": "Browser to use for frontend tests"
+    },
+    "headless": {
+      "type": "boolean",
+      "default": true,
+      "description": "Run browser in headless mode"
+    },
+    "parallel": {
+      "type": "boolean",
+      "default": true,
+      "description": "Run tests in parallel"
+    },
+    "max_concurrent": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 10,
+      "description": "Maximum concurrent test executions"
+    },
+    "timeout": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 300000,
+      "default": 30000,
+      "description": "Default timeout for operations (ms)"
+    },
+    "scenarios": {
+      "type": "object",
+      "properties": {
+        "frontend": {
+          "type": "string",
+          "description": "Path to frontend test scenarios YAML"
+        },
+        "backend": {
+          "type": "string",
+          "description": "Path to backend test scenarios YAML"
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Test user email (from environment variable)"
+        },
+        "password": {
+          "type": "string",
+          "description": "Test user password (from environment variable)"
+        }
+      },
+      "description": "Authentication credentials"
+    },
+    "safety": {
+      "type": "object",
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "default": false,
+          "description": "Simulate fixes without applying"
+        },
+        "require_approval": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require human approval before fixes"
+        },
+        "backup_enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Backup files before fixes"
+        },
+        "validate_syntax": {
+          "type": "boolean",
+          "default": true,
+          "description": "Validate syntax after fixes"
+        },
+        "run_tests": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run tests after fixes"
+        },
+        "max_retest_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 3,
+          "description": "Max re-test loops"
+        },
+        "rollback_on_failure": {
+          "type": "boolean",
+          "default": true,
+          "description": "Rollback on validation failure"
+        }
+      },
+      "description": "Safety configuration"
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "artifacts_dir": {
+          "type": "string",
+          "default": "artifacts",
+          "description": "Directory for screenshots, traces, logs"
+        },
+        "reports_dir": {
+          "type": "string",
+          "default": "reports",
+          "description": "Directory for workflow reports"
+        },
+        "generate_html": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate HTML dashboard"
+        },
+        "generate_json": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate JSON report"
+        }
+      },
+      "description": "Output configuration"
+    }
+  },
+  "examples": [
+    {
+      "frontend_url": "http://localhost:3000",
+      "backend_url": "http://localhost:8000",
+      "browser": "chromium",
+      "headless": true,
+      "parallel": true,
+      "max_concurrent": 10,
+      "timeout": 30000,
+      "scenarios": {
+        "frontend": "config/frontend-tests.yaml",
+        "backend": "config/backend-tests.yaml"
+      },
+      "auth": {
+        "email": "${TEST_AUTH_EMAIL}",
+        "password": "${TEST_AUTH_PASSWORD}"
+      },
+      "safety": {
+        "dry_run": false,
+        "require_approval": false,
+        "backup_enabled": true,
+        "validate_syntax": true,
+        "run_tests": true,
+        "max_retest_iterations": 3,
+        "rollback_on_failure": true
+      },
+      "output": {
+        "artifacts_dir": "artifacts",
+        "reports_dir": "reports",
+        "generate_html": true,
+        "generate_json": true
+      }
+    }
+  ]
+}
