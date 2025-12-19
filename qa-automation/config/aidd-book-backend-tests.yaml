@@ -1,0 +1,55 @@
+# Backend test scenarios for AIdd-book API
+scenarios:
+  - id: api-health-check
+    type: backend
+    name: API Health Check
+    description: Check if API is responding
+    method: GET
+    url: /health
+    assertions:
+      - status_code: 200
+
+  - id: api-docs
+    type: backend
+    name: API Documentation
+    description: Check if API docs are accessible
+    method: GET
+    url: /docs
+    assertions:
+      - status_code: 200
+
+  - id: auth-endpoints
+    type: backend
+    name: Auth Endpoints Check
+    description: Check if auth endpoints exist
+    method: GET
+    url: /auth/
+    assertions:
+      - status_code: 200  # Accept any reasonable status
+
+  - id: chatkit-endpoint
+    type: backend
+    name: ChatKit API Endpoint
+    description: Check if ChatKit endpoint exists
+    method: GET
+    url: /chatkit/api
+    assertions:
+      - status_code: 200
+
+  - id: user-api
+    type: backend
+    name: User API Endpoint
+    description: Check user API endpoints
+    method: GET
+    url: /api/user
+    assertions:
+      - status_code: 200
+
+  - id: content-api
+    type: backend
+    name: Content API Endpoint
+    description: Check content API endpoints
+    method: GET
+    url: /api/content
+    assertions:
+      - status_code: 200

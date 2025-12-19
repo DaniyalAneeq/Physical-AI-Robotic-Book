@@ -117,27 +117,28 @@ async def google_oauth_callback(
         error_url = f"{settings.frontend_url}/login?error=session_creation_failed"
         return RedirectResponse(url=error_url)
 
-    # Determine redirect URL based on onboarding status
+    # For cross-origin OAuth (localhost:8000 -> localhost:3000), we can't rely on cookies
+    # being transferred in the redirect. Instead, pass the token in URL fragment.
+    # Frontend will read it and call a special endpoint to establish the session.
+
+    # Determine base redirect URL based on onboarding status
     if user.onboarding_completed:
-        redirect_url = settings.frontend_url
+        base_url = settings.frontend_url
+        onboarding_param = "false"
     else:
-        # Redirect to frontend with onboarding parameter
-        redirect_url = f"{settings.frontend_url}?onboarding=required"
+        base_url = settings.frontend_url
+        onboarding_param = "true"
 
-    # Create redirect response
-    redirect_response = RedirectResponse(url=redirect_url)
+    # Add token to URL fragment (not sent to server, client-side only for security)
+    # Frontend auth callback page will read this and exchange it for a cookie
+    import urllib.parse
+    fragment_params = urllib.parse.urlencode({
+        'session_token': plain_token,
+        'onboarding_required': onboarding_param
+    })
+    redirect_url = f"{base_url}/auth/callback#{fragment_params}"
 
-    # Set session cookie
-    redirect_response.set_cookie(
-        key=settings.session_cookie_name,
-        value=plain_token,
-        httponly=True,
-        secure=settings.secure_cookies,
-        samesite=settings.same_site_cookies,
-        max_age=settings.session_max_age_days * 24 * 60 * 60,
-    )
-
-    return redirect_response
+    return RedirectResponse(url=redirect_url)
 
 
 @router.get("/github")
@@ -257,24 +258,25 @@ async def github_oauth_callback(
         error_url = f"{settings.frontend_url}/login?error=session_creation_failed"
         return RedirectResponse(url=error_url)
 
-    # Determine redirect URL based on onboarding status
+    # For cross-origin OAuth (localhost:8000 -> localhost:3000), we can't rely on cookies
+    # being transferred in the redirect. Instead, pass the token in URL fragment.
+    # Frontend will read it and call a special endpoint to establish the session.
+
+    # Determine base redirect URL based on onboarding status
     if user.onboarding_completed:
-        redirect_url = settings.frontend_url
+        base_url = settings.frontend_url
+        onboarding_param = "false"
     else:
-        # Redirect to frontend with onboarding parameter
-        redirect_url = f"{settings.frontend_url}?onboarding=required"
+        base_url = settings.frontend_url
+        onboarding_param = "true"
 
-    # Create redirect response
-    redirect_response = RedirectResponse(url=redirect_url)
+    # Add token to URL fragment (not sent to server, client-side only for security)
+    # Frontend auth callback page will read this and exchange it for a cookie
+    import urllib.parse
+    fragment_params = urllib.parse.urlencode({
+        'session_token': plain_token,
+        'onboarding_required': onboarding_param
+    })
+    redirect_url = f"{base_url}/auth/callback#{fragment_params}"
 
-    # Set session cookie
-    redirect_response.set_cookie(
-        key=settings.session_cookie_name,
-        value=plain_token,
-        httponly=True,
-        secure=settings.secure_cookies,
-        samesite=settings.same_site_cookies,
-        max_age=settings.session_max_age_days * 24 * 60 * 60,
-    )
-
-    return redirect_response
+    return RedirectResponse(url=redirect_url)

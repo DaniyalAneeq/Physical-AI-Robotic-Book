@@ -12,6 +12,35 @@ from auth_backend.models.user import User
 from auth_backend.utils.security import generate_and_hash_token, hash_token
 
 
+def get_cookie_attributes(secure: bool, same_site: str) -> dict:
+    """
+    Get cookie attributes based on environment configuration.
+
+    This helper ensures cookies are configured correctly for the environment:
+    - Development (HTTP): SameSite=Lax, Secure=False
+    - Production (HTTPS): SameSite=None, Secure=True
+
+    Args:
+        secure: Whether to set the Secure flag (requires HTTPS)
+        same_site: SameSite attribute value ("lax", "strict", or "none")
+
+    Returns:
+        dict: Cookie attributes ready for use with response.set_cookie()
+
+    Example:
+        >>> from auth_backend.config import settings
+        >>> attrs = get_cookie_attributes(settings.secure_cookies, settings.same_site_cookies)
+        >>> response.set_cookie(key="session", value=token, **attrs)
+    """
+    return {
+        "httponly": True,
+        "secure": secure,
+        "samesite": same_site,
+        "path": "/",
+        "domain": None,  # Let browser set domain automatically for better compatibility
+    }
+
+
 class SessionService:
     """
     Service for managing user sessions.

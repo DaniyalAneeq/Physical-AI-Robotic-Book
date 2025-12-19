@@ -13,12 +13,16 @@ import {
   logout as apiLogout,
   getCurrentSession,
   loginWithGoogle as apiLoginWithGoogle,
+  getUserPreferences,
 } from '../services/authApi';
+import { applyUserLocale } from '../utils/localeUtils';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
+  showOnboardingModal: boolean;
+  setShowOnboardingModal: (show: boolean) => void;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, name: string, password: string) => Promise<AuthResponse>;
   logout: () => Promise<void>;
@@ -41,9 +45,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
 
   /**
-   * Load current session on mount
+   * Load current session on mount and apply user preferences
    */
   const loadSession = useCallback(async () => {
     try {
@@ -51,6 +56,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const session = await getCurrentSession();
       if (session) {
         setUser(session.user);
+
+        // Check if onboarding is required and trigger modal
+        if (session.onboarding_required) {
+          setShowOnboardingModal(true);
+        }
+
+        // Fetch and apply user preferences (including locale)
+        try {
+          const preferences = await getUserPreferences();
+          if (preferences && preferences.preferred_locale) {
+            // Apply user's preferred locale
+            applyUserLocale(preferences.preferred_locale);
+          }
+        } catch (prefErr) {
+          console.error('Failed to load user preferences:', prefErr);
+          // Don't fail session load if preferences fail
+        }
       } else {
         setUser(null);
       }
@@ -75,6 +97,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true);
       const response = await apiLogin({ email, password });
       setUser(response.user);
+      await loadSession();
+
+      // Check if onboarding is required and trigger modal
+      if (response.onboarding_required) {
+        setShowOnboardingModal(true);
+      }
+
+      // Fetch and apply user preferences after successful login
+      try {
+        const preferences = await getUserPreferences();
+        if (preferences && preferences.preferred_locale) {
+          applyUserLocale(preferences.preferred_locale);
+        }
+      } catch (prefErr) {
+        console.error('Failed to load user preferences after login:', prefErr);
+        // Don't fail login if preferences fail
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
       setError(errorMessage);
@@ -93,6 +132,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setLoading(true);
       const response = await apiRegister({ email, name, password });
       setUser(response.user);
+      await loadSession();
+
+      // Check if onboarding is required and trigger modal
+      if (response.onboarding_required) {
+        setShowOnboardingModal(true);
+      }
 
       // Return the response so the caller can check onboarding_required
       return response;
@@ -138,6 +183,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     user,
     loading,
     error,
+    showOnboardingModal,
+    setShowOnboardingModal,
     login,
     register,
     logout,

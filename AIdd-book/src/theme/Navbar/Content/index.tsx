@@ -19,6 +19,7 @@ import NavbarLogo from '@theme/Navbar/Logo';
 import NavbarSearch from '@theme/Navbar/Search';
 import Link from '@docusaurus/Link';
 import UserMenu from '../../../components/Auth/UserMenu';
+import LanguageToggle from '../../../components/LanguageToggle';
 import { useAuth } from '../../../hooks/useAuth';
 
 import styles from './styles.module.css';
@@ -101,6 +102,9 @@ export default function NavbarContent(): JSX.Element {
               <SearchBar />
             </NavbarSearch>
           )}
+
+          {/* Language Toggle (auth-gated) */}
+          <LanguageToggle />
 
           {/* Authentication UI */}
           {!loading && (

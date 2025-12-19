@@ -1,0 +1,465 @@
+openapi: 3.0.3
+info:
+  title: i18n API - English/Urdu Localization
+  description: API endpoints for internationalization and localization support
+  version: 1.0.0
+  contact:
+    name: Physical AI & Humanoid Robotics Platform
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local development
+  - url: https://api.physicalai.example.com/api
+    description: Production
+
+tags:
+  - name: User Preferences
+    description: User locale and language preference management
+  - name: Content
+    description: Localized book content retrieval
+  - name: Chatbot
+    description: RAG chatbot with translation support
+
+paths:
+  /user/preferences:
+    get:
+      tags:
+        - User Preferences
+      summary: Get user preferences including locale
+      description: Retrieves the authenticated user's preferences, including their preferred locale
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User preferences retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferences'
+              example:
+                user_id: "user_123"
+                preferred_locale: "ur"
+                theme: "dark"
+                notifications_enabled: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - User Preferences
+      summary: Update user preferences
+      description: Updates the authenticated user's preferences, including locale
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePreferencesRequest'
+            example:
+              preferred_locale: "ur"
+              theme: "dark"
+      responses:
+        '200':
+          description: Preferences updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferences'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: Invalid locale value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "ValidationError"
+                message: "preferred_locale must be one of: en, ur"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /content/{module_id}:
+    get:
+      tags:
+        - Content
+      summary: Get localized book module content
+      description: Retrieves book module content in the requested locale (from Accept-Language header or user preference)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: module_id
+          in: path
+          required: true
+          description: Unique identifier for the book module (e.g., "module-1-chapter-2")
+          schema:
+            type: string
+            pattern: '^module-\d+-chapter-\d+(-section-\d+)?$'
+          example: "module-1-chapter-2-section-3"
+        - name: Accept-Language
+          in: header
+          required: false
+          description: Preferred language (ISO 639-1). Defaults to user preference if not provided.
+          schema:
+            type: string
+            enum: [en, ur, en-US, ur-PK]
+          example: "ur"
+      responses:
+        '200':
+          description: Content retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocalizedContent'
+              examples:
+                complete_urdu:
+                  summary: Complete Urdu translation available
+                  value:
+                    module_id: "module-1-chapter-2"
+                    locale: "ur"
+                    title: "PID کنٹرولرز کا تعارف"
+                    content: "PID کنٹرولر ایک کنٹرول لوپ میکانزم ہے..."
+                    translation_status: "complete"
+                    technical_terms: ["PID Controller", "Actuator", "Feedback Loop"]
+                    metadata:
+                      module: "module-1"
+                      chapter: "chapter-2"
+                      last_updated: "2025-12-10T00:00:00Z"
+                pending_translation:
+                  summary: Urdu translation pending (English fallback)
+                  value:
+                    module_id: "module-1-chapter-5"
+                    locale: "ur"
+                    title: "Advanced Control Systems"
+                    content: "Advanced control systems integrate..."
+                    translation_status: "pending"
+                    fallback_message: "اردو ترجمہ دستیاب نہیں - Urdu translation unavailable"
+                    metadata:
+                      module: "module-1"
+                      chapter: "chapter-5"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "NotFound"
+                message: "Module 'module-99-chapter-1' does not exist"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /chatkit/query:
+    post:
+      tags:
+        - Chatbot
+      summary: Send query to RAG chatbot with translation support
+      description: |
+        Processes a user query with automatic language detection and translation:
+        - Detects query language (English or Urdu)
+        - Translates Urdu queries to English for vector search
+        - Retrieves relevant context from English embeddings
+        - Generates response in user's query language
+        - Caches translations to reduce API costs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: false
+          description: Preferred response language. Auto-detected from query if not provided.
+          schema:
+            type: string
+            enum: [en, ur]
+          example: "ur"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatQueryRequest'
+            examples:
+              urdu_query:
+                summary: Urdu query example
+                value:
+                  query: "PID Controller کیا ہے؟"
+                  session_id: "session_abc123"
+                  query_language: "ur"
+              english_query:
+                summary: English query example
+                value:
+                  query: "What is a PID controller?"
+                  session_id: "session_abc123"
+      responses:
+        '200':
+          description: Query processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatQueryResponse'
+              examples:
+                urdu_response:
+                  summary: Response in Urdu
+                  value:
+                    query_id: "query_xyz789"
+                    response: "PID Controller ایک کنٹرول لوپ میکانزم ہے جو feedback استعمال کرتے ہوئے مطلوبہ output حاصل کرتا ہے..."
+                    response_language: "ur"
+                    sources:
+                      - module_id: "module-1-chapter-2"
+                        title: "PID کنٹرولرز کا تعارف"
+                        relevance_score: 0.92
+                    translation_cached: false
+                    processing_time_ms: 1250
+                english_response:
+                  summary: Response in English (cached)
+                  value:
+                    query_id: "query_abc456"
+                    response: "A PID Controller is a control loop mechanism that uses feedback to achieve the desired output..."
+                    response_language: "en"
+                    sources:
+                      - module_id: "module-1-chapter-2"
+                        title: "Introduction to PID Controllers"
+                        relevance_score: 0.95
+                    translation_cached: true
+                    processing_time_ms: 320
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "RateLimitExceeded"
+                message: "Maximum 60 requests per minute exceeded. Retry after 30 seconds."
+                retry_after: 30
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Better Auth JWT token
+
+  schemas:
+    UserPreferences:
+      type: object
+      required:
+        - user_id
+        - preferred_locale
+      properties:
+        user_id:
+          type: string
+          description: Unique user identifier
+        preferred_locale:
+          type: string
+          enum: [en, ur]
+          description: User's preferred UI and content language
+          default: en
+        theme:
+          type: string
+          enum: [light, dark, auto]
+          description: UI theme preference
+        notifications_enabled:
+          type: boolean
+          description: Whether notifications are enabled
+
+    UpdatePreferencesRequest:
+      type: object
+      properties:
+        preferred_locale:
+          type: string
+          enum: [en, ur]
+          description: New preferred locale
+        theme:
+          type: string
+          enum: [light, dark, auto]
+        notifications_enabled:
+          type: boolean
+      minProperties: 1
+
+    LocalizedContent:
+      type: object
+      required:
+        - module_id
+        - locale
+        - title
+        - content
+        - translation_status
+      properties:
+        module_id:
+          type: string
+          description: Unique module identifier
+        locale:
+          type: string
+          enum: [en, ur]
+          description: Language of returned content
+        title:
+          type: string
+          description: Localized module title
+        content:
+          type: string
+          description: Full module content in requested language
+        translation_status:
+          type: string
+          enum: [complete, pending, partial, unavailable]
+          description: Translation completeness status
+        technical_terms:
+          type: array
+          items:
+            type: string
+          description: List of technical terms preserved in English
+        fallback_message:
+          type: string
+          nullable: true
+          description: Message shown when Urdu translation unavailable
+        metadata:
+          type: object
+          properties:
+            module:
+              type: string
+            chapter:
+              type: string
+            section:
+              type: string
+              nullable: true
+            last_updated:
+              type: string
+              format: date-time
+
+    ChatQueryRequest:
+      type: object
+      required:
+        - query
+        - session_id
+      properties:
+        query:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: User's question in English or Urdu
+        session_id:
+          type: string
+          description: Unique session identifier for conversation context
+        query_language:
+          type: string
+          enum: [en, ur]
+          description: Explicitly specified query language (auto-detected if not provided)
+
+    ChatQueryResponse:
+      type: object
+      required:
+        - query_id
+        - response
+        - response_language
+        - sources
+        - translation_cached
+        - processing_time_ms
+      properties:
+        query_id:
+          type: string
+          description: Unique identifier for this query
+        response:
+          type: string
+          description: Chatbot answer in requested language
+        response_language:
+          type: string
+          enum: [en, ur]
+          description: Language of the response
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+          description: Relevant book modules used to generate response
+        translation_cached:
+          type: boolean
+          description: Whether response was served from translation cache
+        processing_time_ms:
+          type: integer
+          description: Total processing time in milliseconds
+
+    Source:
+      type: object
+      required:
+        - module_id
+        - title
+        - relevance_score
+      properties:
+        module_id:
+          type: string
+          description: Source module identifier
+        title:
+          type: string
+          description: Source module title (in response language)
+        relevance_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Semantic similarity score
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error type identifier
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error context
+        retry_after:
+          type: integer
+          description: Seconds to wait before retry (rate limiting)
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "BadRequest"
+            message: "Invalid request: query field is required"
+
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Unauthorized"
+            message: "Authentication required. Please log in."
+
+    InternalServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "InternalServerError"
+            message: "An unexpected error occurred. Please try again later."

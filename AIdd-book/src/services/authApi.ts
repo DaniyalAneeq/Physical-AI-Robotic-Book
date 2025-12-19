@@ -27,6 +27,7 @@ export interface User {
   name: string;
   email_verified_at: string | null;
   onboarding_completed: boolean;
+  preferred_locale?: string; // User's preferred language ('en' or 'ur')
   created_at: string;
   updated_at: string;
 }
@@ -244,4 +245,59 @@ export async function getOnboardingProfile(): Promise<OnboardingProfile | null> 
     console.error('Error getting onboarding profile:', error);
     return null;
   }
+}
+
+/**
+ * User preferences interface
+ */
+export interface UserPreferences {
+  preferred_locale: string; // 'en' or 'ur'
+}
+
+/**
+ * Get user preferences (including preferred locale)
+ */
+export async function getUserPreferences(): Promise<UserPreferences | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/user/preferences`, {
+      credentials: 'include',
+    });
+
+    if (response.status === 401) {
+      // Not authenticated
+      return null;
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to get user preferences');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error getting user preferences:', error);
+    return null;
+  }
+}
+
+/**
+ * Update user preferences
+ */
+export async function updateUserPreferences(
+  preferences: Partial<UserPreferences>
+): Promise<UserPreferences> {
+  const response = await fetch(`${API_BASE_URL}/api/user/preferences`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(preferences),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const error: AuthError = await response.json();
+    throw new Error(error.detail || 'Failed to update user preferences');
+  }
+
+  return response.json();
 }

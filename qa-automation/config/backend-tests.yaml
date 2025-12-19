@@ -1,0 +1,110 @@
+# Backend API Test Scenarios
+# Define HTTP-based test cases for API endpoints
+
+scenarios:
+  - id: "health-check"
+    name: "Health check endpoint"
+    enabled: true
+    type: "backend"
+    method: "GET"
+    url: "http://localhost:8000/health"
+    auth_required: false
+    expected_status: 200
+    performance:
+      max_response_time_ms: 500
+
+  - id: "get-users-list"
+    name: "Get users list endpoint"
+    enabled: true
+    type: "backend"
+    method: "GET"
+    url: "http://localhost:8000/api/users"
+    auth_required: true
+    auth_method: "jwt_bearer"
+    expected_status: 200
+    schema_ref: "#/components/schemas/UserList"
+    performance:
+      max_response_time_ms: 1000
+
+  - id: "create-user"
+    name: "Create new user"
+    enabled: true
+    type: "backend"
+    method: "POST"
+    url: "http://localhost:8000/api/users"
+    auth_required: true
+    auth_method: "jwt_bearer"
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: "Test User"
+      email: "test.user@example.com"
+      role: "user"
+    expected_status: 201
+    schema_ref: "#/components/schemas/User"
+    performance:
+      max_response_time_ms: 2000
+
+  - id: "get-user-by-id"
+    name: "Get user by ID"
+    enabled: true
+    type: "backend"
+    method: "GET"
+    url: "http://localhost:8000/api/users/1"
+    auth_required: true
+    auth_method: "jwt_bearer"
+    expected_status: 200
+    schema_ref: "#/components/schemas/User"
+    performance:
+      max_response_time_ms: 500
+
+  - id: "update-user"
+    name: "Update existing user"
+    enabled: true
+    type: "backend"
+    method: "PUT"
+    url: "http://localhost:8000/api/users/1"
+    auth_required: true
+    auth_method: "jwt_bearer"
+    headers:
+      Content-Type: "application/json"
+    body:
+      name: "Updated User Name"
+    expected_status: 200
+    schema_ref: "#/components/schemas/User"
+    performance:
+      max_response_time_ms: 1000
+
+  - id: "delete-user"
+    name: "Delete user"
+    enabled: true
+    type: "backend"
+    method: "DELETE"
+    url: "http://localhost:8000/api/users/1"
+    auth_required: true
+    auth_method: "jwt_bearer"
+    expected_status: 204
+    performance:
+      max_response_time_ms: 1000
+
+  - id: "unauthorized-access"
+    name: "Unauthorized access returns 401"
+    enabled: true
+    type: "backend"
+    method: "GET"
+    url: "http://localhost:8000/api/users"
+    auth_required: false
+    expected_status: 401
+    performance:
+      max_response_time_ms: 500
+
+  - id: "invalid-endpoint"
+    name: "Invalid endpoint returns 404"
+    enabled: true
+    type: "backend"
+    method: "GET"
+    url: "http://localhost:8000/api/nonexistent"
+    auth_required: false
+    expected_status: 404
+    performance:
+      max_response_time_ms: 500

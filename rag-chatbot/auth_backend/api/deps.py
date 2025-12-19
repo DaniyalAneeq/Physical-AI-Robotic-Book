@@ -1,5 +1,6 @@
 """Authentication dependencies for FastAPI."""
 
+import logging
 from typing import Optional, Tuple
 
 from fastapi import Cookie, Depends, HTTPException, status
@@ -10,6 +11,9 @@ from auth_backend.database import get_db
 from auth_backend.models.session import Session
 from auth_backend.models.user import User
 from auth_backend.services.session import SessionService
+
+# Configure logger for authentication events
+logger = logging.getLogger(__name__)
 
 
 async def get_current_user(
@@ -47,6 +51,10 @@ async def get_current_user(
     result = await session_service.validate_session(db, session_token)
 
     if not result:
+        logger.warning(
+            "Session validation failed: invalid or expired token",
+            extra={"token_preview": session_token[:10] + "..." if len(session_token) > 10 else session_token}
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Session invalid or expired. Please log in again.",
@@ -129,6 +137,10 @@ async def get_current_session_and_user(
     result = await session_service.validate_session(db, session_token)
 
     if not result:
+        logger.warning(
+            "Session validation failed: invalid or expired token",
+            extra={"token_preview": session_token[:10] + "..." if len(session_token) > 10 else session_token}
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Session invalid or expired. Please log in again.",

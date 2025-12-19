@@ -1,0 +1,75 @@
+# Default QA Workflow Configuration
+# Override settings via command-line flags or custom config files
+
+# Application URLs
+frontend_url: http://localhost:3000
+backend_url: http://localhost:8000
+
+# Browser Settings
+browser: chromium  # Options: chromium, firefox, webkit
+headless: true
+timeout: 30000  # milliseconds
+viewport:
+  width: 1920
+  height: 1080
+
+# Parallelization
+parallel: true
+max_concurrent: 10  # Max concurrent tests
+
+# Test Scenarios
+scenarios:
+  frontend: config/frontend-tests.yaml
+  backend: config/backend-tests.yaml
+
+# Authentication
+auth:
+  email: ${TEST_AUTH_EMAIL}  # From environment variable
+  password: ${TEST_AUTH_PASSWORD}  # From environment variable
+  base_url: ${frontend_url}
+
+# Safety Settings
+safety:
+  dry_run: false              # Set to true to simulate fixes without applying
+  require_approval: false     # Set to true for manual approval before fixes
+  backup_enabled: true        # Always backup files before fixes
+  validate_syntax: true       # Validate syntax after every fix
+  run_tests: true             # Run related tests after fixes
+  max_retest_iterations: 3    # Maximum re-test loops
+  rollback_on_failure: true   # Automatically rollback failed fixes
+
+# Performance Thresholds
+performance:
+  max_page_load_ms: 3000      # Frontend page load timeout
+  max_api_response_ms: 1000   # Backend API response timeout
+  max_bundle_size_mb: 5       # Frontend bundle size limit
+
+# Output Settings
+output:
+  artifacts_dir: artifacts
+  reports_dir: reports
+  generate_html: true
+  generate_json: true
+  generate_text_summary: true
+  log_level: INFO  # DEBUG, INFO, WARNING, ERROR
+
+# Detection Settings
+detection:
+  skip_hidden_elements: true
+  capture_screenshots: true
+  capture_traces: true
+  capture_console_logs: true
+  capture_network_logs: true
+
+# Resolution Settings
+resolution:
+  enable_auto_fix: true
+  safe_auto_fixes:
+    - missing_alt_text
+    - eslint_formatting
+    - unused_imports
+  unsafe_patterns:  # Never auto-fix these
+    - authentication_bypass
+    - sql_injection
+    - logic_error
+    - api_contract_violation

@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/issue.schema.json",
+  "title": "Issue",
+  "description": "Represents a detected problem in the application",
+  "type": "object",
+  "required": ["type", "location", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the issue"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["frontend", "backend", "performance"],
+      "description": "Type of issue detected"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"],
+      "description": "Severity level (assigned in analysis phase)"
+    },
+    "detection_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the issue was detected (ISO 8601 format)"
+    },
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "description": "URL/endpoint/file path where issue was detected"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1000,
+      "description": "Detailed description of the issue"
+    },
+    "captured_context": {
+      "type": "object",
+      "description": "Context artifacts (screenshots, request/response, logs)",
+      "additionalProperties": true
+    },
+    "root_cause": {
+      "type": "string",
+      "description": "Identified root cause (assigned in analysis phase)"
+    },
+    "related_issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of related issue IDs"
+    },
+    "resolution_status": {
+      "type": "string",
+      "enum": ["pending", "auto_fixed", "manual_required", "verified", "wont_fix"],
+      "default": "pending",
+      "description": "Current resolution state"
+    },
+    "resolution_action_id": {
+      "type": "string",
+      "description": "ID of resolution action taken (if any)"
+    }
+  },
+  "examples": [
+    {
+      "id": "iss-001",
+      "type": "frontend",
+      "severity": "high",
+      "detection_timestamp": "2025-12-17T14:30:22Z",
+      "location": "http://localhost:3000/dashboard",
+      "description": "Missing alt text on profile image - accessibility violation",
+      "captured_context": {
+        "screenshot": "artifacts/screenshots/dashboard-001.png",
+        "selector": "img.profile-avatar",
+        "html": "<img src='/avatar.jpg' class='profile-avatar'>"
+      },
+      "root_cause": "Direct issue - no upstream dependency detected",
+      "related_issues": ["iss-002", "iss-003"],
+      "resolution_status": "pending",
+      "resolution_action_id": null
+    }
+  ]
+}
