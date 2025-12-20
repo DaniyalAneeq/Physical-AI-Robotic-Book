@@ -60,7 +60,7 @@ except ImportError:
         session_idle_timeout_days: int = 7
 
         # CORS
-        cors_origins: str = "http://localhost:3000,http://localhost:8000,https://ibrahimkhalildev.github.io"
+        cors_origins: str = "http://localhost:3000,http://localhost:8000,https://daniyalaneeq.github.io"
 
         # Google OAuth (optional)
         oauth_google_client_id: str = ""
