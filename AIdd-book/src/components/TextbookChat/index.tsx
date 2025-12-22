@@ -16,6 +16,19 @@ interface TextbookChatProps {
   compact?: boolean;
 }
 
+// Determine API base URL based on environment
+function getApiBaseUrl(): string {
+  if (typeof window === 'undefined') {
+    return 'http://localhost:8000';
+  }
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8000';
+  }
+  // Production: Use deployed backend URL
+  return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
+}
+
 export default function TextbookChat({
   apiUrl,
   moduleFilter,
@@ -23,7 +36,8 @@ export default function TextbookChat({
 }: TextbookChatProps): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   const chatbotConfig = (siteConfig.customFields?.chatbot as any) || {};
-  const finalApiUrl = apiUrl || `${chatbotConfig.apiUrl || 'http://localhost:8000'}/chatkit`;
+  const baseUrl = getApiBaseUrl();
+  const finalApiUrl = apiUrl || `${chatbotConfig.apiUrl || baseUrl}/chatkit`;
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);

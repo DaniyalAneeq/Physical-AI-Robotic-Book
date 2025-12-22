@@ -12,10 +12,8 @@ function getApiBaseUrl(): string {
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:8000';
   }
-  // Production: Use environment variable or deployed backend URL
-  // For GitHub Pages, you'll need to deploy the backend separately
-  // and update this URL to your production backend
-  return process.env.REACT_APP_API_URL || 'https://aidd-chatbot-api.onrender.com';
+  // Production: Use deployed backend URL
+  return process.env.REACT_APP_API_URL || 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
 }
 
 interface ChatKitChatbotProps {
