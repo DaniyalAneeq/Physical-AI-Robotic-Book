@@ -63,7 +63,7 @@ redirect_uri = settings.oauth_google_redirect_uri
 if not redirect_uri.startswith("http://") and not redirect_uri.startswith("https://"):
     errors.append(f"Redirect URI must start with http:// or https://: {redirect_uri}")
 
-if "localhost:8000" in redirect_uri or "127.0.0.1:8000" in redirect_uri:
+if "https://e-book-physical-ai-humanoid-robotics.onrender.com" in redirect_uri or "127.0.0.1:8000" in redirect_uri:
     print("✅ Using localhost redirect URI (development)")
 else:
     warnings.append("Redirect URI is not localhost - ensure it's configured in Google Cloud Console")

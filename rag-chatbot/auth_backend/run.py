@@ -90,9 +90,9 @@ def run_server():
     print("  cd ../backend")
     print("  uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload")
     print("\nEndpoints:")
-    print("  RAG: http://localhost:8000/api/*")
-    print("  Auth: http://localhost:8000/auth/*")
-    print("  Docs: http://localhost:8000/docs")
+    print("  RAG: https://e-book-physical-ai-humanoid-robotics.onrender.com/api/*")
+    print("  Auth: https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/*")
+    print("  Docs: https://e-book-physical-ai-humanoid-robotics.onrender.com/docs")
     print("\n" + "=" * 60 + "\n")
     sys.exit(1)
 

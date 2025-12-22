@@ -8,11 +8,11 @@
 // Determine API base URL based on environment
 function getApiBaseUrl(): string {
   if (typeof window === 'undefined') {
-    return 'http://localhost:8000';
+    return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
   }
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8000';
+    return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
   }
   // Production: Use deployed backend URL
   // For GitHub Pages deployment, the backend needs to be deployed separately

@@ -60,17 +60,17 @@ except ImportError:
         session_idle_timeout_days: int = 7
 
         # CORS
-        cors_origins: str = "http://localhost:3000,http://localhost:8000,https://daniyalaneeq.github.io"
+        cors_origins: str = "http://localhost:3000,https://e-book-physical-ai-humanoid-robotics.onrender.com,https://daniyalaneeq.github.io"
 
         # Google OAuth (optional)
         oauth_google_client_id: str = ""
         oauth_google_client_secret: str = ""
-        oauth_google_redirect_uri: str = "http://localhost:8000/auth/oauth/google/callback"
+        oauth_google_redirect_uri: str = "https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/oauth/google/callback"
 
         # GitHub OAuth (optional)
         oauth_github_client_id: str = ""
         oauth_github_client_secret: str = ""
-        oauth_github_redirect_uri: str = "http://localhost:8000/auth/oauth/github/callback"
+        oauth_github_redirect_uri: str = "https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/oauth/github/callback"
 
         # Frontend URL for OAuth redirects
         frontend_url: str = "http://localhost:3000/Physical-AI-Robotic-Book"

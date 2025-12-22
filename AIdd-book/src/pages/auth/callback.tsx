@@ -12,13 +12,13 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 // Determine API base URL
 function getApiBaseUrl(): string {
   if (typeof window === 'undefined') {
-    return 'http://localhost:8000';
+    return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
   }
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8000';
+    return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
   }
-  return 'https://aidd-chatbot-api.onrender.com';
+  return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
 }
 
 export default function OAuthCallback() {

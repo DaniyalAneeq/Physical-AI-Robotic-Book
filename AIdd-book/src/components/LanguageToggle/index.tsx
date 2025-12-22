@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import type { JSX } from 'react';
 import { useHistory, useLocation } from '@docusaurus/router';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useAuth } from '@site/src/hooks/useAuth';
@@ -32,7 +33,7 @@ export default function LanguageToggle(): JSX.Element | null {
   const [isChanging, setIsChanging] = useState(false);
 
   // Get API URL from site config
-  const apiUrl = (siteConfig.customFields?.chatbot as any)?.apiUrl || 'http://localhost:8000';
+  const apiUrl = (siteConfig.customFields?.chatbot as any)?.apiUrl || 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
 
   // Detect current locale from URL
   useEffect(() => {

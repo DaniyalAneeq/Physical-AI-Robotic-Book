@@ -136,7 +136,7 @@ class WorkflowExecution(BaseModel):
                 "deployment_ready": True,
                 "config": {
                     "frontend_url": "http://localhost:3000",
-                    "backend_url": "http://localhost:8000",
+                    "backend_url": "https://e-book-physical-ai-humanoid-robotics.onrender.com",
                     "max_retest_iterations": 3,
                 },
                 "phase_results": [

@@ -7,7 +7,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "GET"
-    url: "http://localhost:8000/health"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/health"
     auth_required: false
     expected_status: 200
     performance:
@@ -18,7 +18,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "GET"
-    url: "http://localhost:8000/api/users"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com/api/users"
     auth_required: true
     auth_method: "jwt_bearer"
     expected_status: 200
@@ -31,7 +31,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "POST"
-    url: "http://localhost:8000/api/users"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/api/users"
     auth_required: true
     auth_method: "jwt_bearer"
     headers:
@@ -50,7 +50,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "GET"
-    url: "http://localhost:8000/api/users/1"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/api/users/1"
     auth_required: true
     auth_method: "jwt_bearer"
     expected_status: 200
@@ -63,7 +63,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "PUT"
-    url: "http://localhost:8000/api/users/1"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/api/users/1"
     auth_required: true
     auth_method: "jwt_bearer"
     headers:
@@ -80,7 +80,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "DELETE"
-    url: "http://localhost:8000/api/users/1"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/api/users/1"
     auth_required: true
     auth_method: "jwt_bearer"
     expected_status: 204
@@ -92,7 +92,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "GET"
-    url: "http://localhost:8000/api/users"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/api/users"
     auth_required: false
     expected_status: 401
     performance:
@@ -103,7 +103,7 @@ scenarios:
     enabled: true
     type: "backend"
     method: "GET"
-    url: "http://localhost:8000/api/nonexistent"
+    url: "https://e-book-physical-ai-humanoid-robotics.onrender.com0/api/nonexistent"
     auth_required: false
     expected_status: 404
     performance:

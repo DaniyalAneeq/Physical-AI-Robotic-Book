@@ -11,7 +11,7 @@ async def test_backend_apis():
     print("TESTING BACKEND APIs")
     print("="*60)
 
-    base_url = "http://localhost:8000"
+    base_url = "https://e-book-physical-ai-humanoid-robotics.onrender.com"
 
     async with httpx.AsyncClient() as client:
         # Test health endpoint

@@ -48,7 +48,7 @@ Configure workflow in `config/default.yaml`:
 
 ```yaml
 frontend_url: http://localhost:3000
-backend_url: http://localhost:8000
+backend_url: https://e-book-physical-ai-humanoid-robotics.onrender.com
 browser: chromium
 headless: true
 parallel: true

@@ -154,7 +154,7 @@ class AuthHandler:
         try:
             email = os.getenv("TEST_AUTH_EMAIL")
             password = os.getenv("TEST_AUTH_PASSWORD")
-            base_url = self.config.get("backend_url", "http://localhost:8000")
+            base_url = self.config.get("backend_url", "https://e-book-physical-ai-humanoid-robotics.onrender.com")
 
             if not email or not password:
                 raise AuthenticationError(
@@ -203,7 +203,7 @@ class AuthHandler:
         try:
             email = os.getenv("TEST_AUTH_EMAIL")
             password = os.getenv("TEST_AUTH_PASSWORD")
-            base_url = self.config.get("backend_url", "http://localhost:8000")
+            base_url = self.config.get("backend_url", "https://e-book-physical-ai-humanoid-robotics.onrender.com")
 
             if not email or not password:
                 raise AuthenticationError(

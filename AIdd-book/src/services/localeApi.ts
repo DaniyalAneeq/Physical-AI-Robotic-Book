@@ -7,7 +7,7 @@
 
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
 
 export interface LocalizedContentResponse {
   module_id: string;

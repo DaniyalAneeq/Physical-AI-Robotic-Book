@@ -36,7 +36,7 @@ async def test_backend_health():
 
         # Test /health
         try:
-            response = await client.get("http://localhost:8000/health")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/health")
             if response.status_code == 200:
                 print_success(f"/health - Status: {response.status_code}")
                 tests_passed += 1
@@ -47,7 +47,7 @@ async def test_backend_health():
 
         # Test /api/health
         try:
-            response = await client.get("http://localhost:8000/api/health")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/health")
             if response.status_code == 200:
                 print_success(f"/api/health - Status: {response.status_code}")
                 print_info(f"  Response: {response.json()}")
@@ -69,7 +69,7 @@ async def test_authentication_endpoints():
 
         # Test /auth/session
         try:
-            response = await client.get("http://localhost:8000/auth/session")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/session")
             print_info(f"/auth/session - Status: {response.status_code}")
             if response.status_code in [200, 401]:  # Either logged in or not
                 tests_passed += 1
@@ -78,7 +78,7 @@ async def test_authentication_endpoints():
 
         # Test /auth/me
         try:
-            response = await client.get("http://localhost:8000/auth/me")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/me")
             print_info(f"/auth/me - Status: {response.status_code}")
             if response.status_code in [200, 401]:
                 tests_passed += 1
@@ -87,7 +87,7 @@ async def test_authentication_endpoints():
 
         # Test /auth/register (GET to check endpoint exists)
         try:
-            response = await client.get("http://localhost:8000/auth/register")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/register")
             print_info(f"/auth/register - Status: {response.status_code} (endpoint exists)")
             if response.status_code in [200, 405, 422]:  # Exists but wrong method or missing params
                 tests_passed += 1
@@ -96,7 +96,7 @@ async def test_authentication_endpoints():
 
         # Test /auth/login
         try:
-            response = await client.get("http://localhost:8000/auth/login")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/login")
             print_info(f"/auth/login - Status: {response.status_code}")
             if response.status_code in [200, 405, 422]:
                 tests_passed += 1
@@ -105,7 +105,7 @@ async def test_authentication_endpoints():
 
         # Test OAuth endpoints
         try:
-            response = await client.get("http://localhost:8000/auth/oauth/google", follow_redirects=False)
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/oauth/google", follow_redirects=False)
             print_info(f"/auth/oauth/google - Status: {response.status_code}")
             if response.status_code in [200, 302, 307]:  # Redirect expected
                 tests_passed += 1
@@ -114,7 +114,7 @@ async def test_authentication_endpoints():
             print_error(f"/auth/oauth/google - Error: {e}")
 
         try:
-            response = await client.get("http://localhost:8000/auth/oauth/github", follow_redirects=False)
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/auth/oauth/github", follow_redirects=False)
             print_info(f"/auth/oauth/github - Status: {response.status_code}")
             if response.status_code in [200, 302, 307]:
                 tests_passed += 1
@@ -134,7 +134,7 @@ async def test_rag_chatbot():
 
         # Test /chatkit (ChatKit widget endpoint)
         try:
-            response = await client.get("http://localhost:8000/chatkit")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/chatkit")
             if response.status_code == 200:
                 print_success(f"/chatkit (widget) - Status: {response.status_code}")
                 tests_passed += 1
@@ -146,7 +146,7 @@ async def test_rag_chatbot():
         # Test /api/chat (POST - needs correct parameters)
         try:
             response = await client.post(
-                "http://localhost:8000/api/chat",
+                "https://e-book-physical-ai-humanoid-robotics.onrender.com/api/chat",
                 json={
                     "query": "What is ROS 2?",
                     "scope": {
@@ -178,7 +178,7 @@ async def test_rag_chatbot():
 
         # Test /api/conversations
         try:
-            response = await client.get("http://localhost:8000/api/conversations")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/conversations")
             if response.status_code in [200, 401]:
                 print_success(f"/api/conversations - Status: {response.status_code}")
                 if response.status_code == 200:
@@ -190,7 +190,7 @@ async def test_rag_chatbot():
 
         # Test /api/index/status (Qdrant vector index)
         try:
-            response = await client.get("http://localhost:8000/api/index/status")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/index/status")
             if response.status_code == 200:
                 print_success(f"/api/index/status - Status: {response.status_code}")
                 status = response.json()
@@ -203,7 +203,7 @@ async def test_rag_chatbot():
 
         # Test /api/content/{module_id}
         try:
-            response = await client.get("http://localhost:8000/api/content/module-1")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/content/module-1")
             if response.status_code == 200:
                 print_success(f"/api/content/module-1 - Status: {response.status_code}")
                 content = response.json()
@@ -226,7 +226,7 @@ async def test_user_management():
 
         # Test /api/user/me
         try:
-            response = await client.get("http://localhost:8000/api/user/me")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/user/me")
             if response.status_code in [200, 401]:
                 print_success(f"/api/user/me - Status: {response.status_code}")
                 if response.status_code == 200:
@@ -239,7 +239,7 @@ async def test_user_management():
 
         # Test /api/user/preferences
         try:
-            response = await client.get("http://localhost:8000/api/user/preferences")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/user/preferences")
             if response.status_code in [200, 401]:
                 print_success(f"/api/user/preferences - Status: {response.status_code}")
                 tests_passed += 1
@@ -248,7 +248,7 @@ async def test_user_management():
 
         # Test /api/sessions
         try:
-            response = await client.get("http://localhost:8000/api/sessions")
+            response = await client.get("https://e-book-physical-ai-humanoid-robotics.onrender.com/api/sessions")
             if response.status_code in [200, 401]:
                 print_success(f"/api/sessions - Status: {response.status_code}")
                 tests_passed += 1
@@ -273,7 +273,7 @@ async def test_onboarding():
 
         for endpoint in endpoints:
             try:
-                response = await client.get(f"http://localhost:8000{endpoint}")
+                response = await client.get(f"https://e-book-physical-ai-humanoid-robotics.onrender.com{endpoint}")
                 if response.status_code in [200, 401, 405, 422]:
                     print_success(f"{endpoint} - Status: {response.status_code}")
                     tests_passed += 1
