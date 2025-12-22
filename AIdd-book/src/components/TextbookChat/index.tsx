@@ -17,6 +17,7 @@ interface TextbookChatProps {
 }
 
 // Determine API base URL based on environment
+// Force rebuild to ensure production URL is used
 function getApiBaseUrl(): string {
   if (typeof window === 'undefined') {
     return 'http://localhost:8000';
