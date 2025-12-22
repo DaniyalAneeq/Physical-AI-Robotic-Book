@@ -16,7 +16,7 @@ function getApiBaseUrl(): string {
   }
   // Production: Use deployed backend URL
   // For GitHub Pages deployment, the backend needs to be deployed separately
-  return 'https://aidd-chatbot-api.onrender.com';
+  return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
 }
 
 const API_BASE_URL = getApiBaseUrl();
