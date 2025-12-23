@@ -1,0 +1,51 @@
+<svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="900" height="600" fill="#f0f2f5"/>
+
+  <!-- Title -->
+  <text x="450" y="40" font-family="Arial, sans-serif" font-size="24" fill="#333" text-anchor="middle">Action State Machine</text>
+
+  <!-- States -->
+  <rect x="100" y="100" width="150" height="60" rx="10" ry="10" fill="#add8e6" stroke="#4682b4" stroke-width="2"/>
+  <text x="175" y="135" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">PENDING</text>
+
+  <rect x="350" y="100" width="150" height="60" rx="10" ry="10" fill="#90ee90" stroke="#3cb371" stroke-width="2"/>
+  <text x="425" y="135" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">ACTIVE</text>
+
+  <rect x="600" y="100" width="150" height="60" rx="10" ry="10" fill="#c6e2ff" stroke="#6495ed" stroke-width="2"/>
+  <text x="675" y="135" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">SUCCEEDED</text>
+
+  <rect x="250" y="300" width="150" height="60" rx="10" ry="10" fill="#ffcccb" stroke="#dc143c" stroke-width="2"/>
+  <text x="325" y="335" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">ABORTED</text>
+
+  <rect x="500" y="300" width="150" height="60" rx="10" ry="10" fill="#ffdab9" stroke="#ff8c00" stroke-width="2"/>
+  <text x="575" y="335" font-family="Arial, sans-serif" font-size="14" fill="#1d3557" text-anchor="middle">CANCELED</text>
+
+  <!-- Arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+    </marker>
+  </defs>
+
+  <!-- PENDING to ACTIVE -->
+  <line x1="250" y1="130" x2="350" y2="130" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="110" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Goal Accepted</text>
+
+  <!-- ACTIVE to SUCCEEDED -->
+  <line x1="500" y1="130" x2="600" y2="130" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="550" y="110" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Goal Completed</text>
+
+  <!-- ACTIVE to ABORTED -->
+  <path d="M425 160 V280 H325" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="375" y="220" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Goal Failed</text>
+
+  <!-- ACTIVE to CANCELED -->
+  <path d="M425 160 V280 H575" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="475" y="220" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Goal Canceled</text>
+
+  <!-- PENDING to CANCELED (direct) -->
+  <path d="M175 160 V280 H500" fill="none" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="337" y="220" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Cancel Request (before accept)</text>
+
+</svg>

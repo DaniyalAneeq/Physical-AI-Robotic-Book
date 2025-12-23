@@ -1,0 +1,40 @@
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="400" fill="#f0f2f5"/>
+
+  <!-- Title -->
+  <text x="400" y="40" font-family="Arial, sans-serif" font-size="24" fill="#333" text-anchor="middle">Service Communication Flow</text>
+
+  <!-- Service Client -->
+  <rect x="100" y="150" width="150" height="80" rx="10" ry="10" fill="#a8dadc" stroke="#457b9d" stroke-width="2"/>
+  <text x="175" y="195" font-family="Arial, sans-serif" font-size="16" fill="#1d3557" text-anchor="middle">Service Client</text>
+
+  <!-- Service Server -->
+  <rect x="550" y="150" width="150" height="80" rx="10" ry="10" fill="#a8dadc" stroke="#457b9d" stroke-width="2"/>
+  <text x="625" y="195" font-family="Arial, sans-serif" font-size="16" fill="#1d3557" text-anchor="middle">Service Server</text>
+
+  <!-- Service -->
+  <rect x="350" y="160" width="100" height="60" rx="8" ry="8" fill="#f1faee" stroke="#2a9d8f" stroke-width="2"/>
+  <text x="400" y="195" font-family="Arial, sans-serif" font-size="16" fill="#2a9d8f" text-anchor="middle">/add_two_ints</text>
+
+  <!-- Arrows: Request -->
+  <defs>
+    <marker id="arrowhead-request" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+    </marker>
+    <marker id="arrowhead-response" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#457b9d" />
+    </marker>
+  </defs>
+
+  <line x1="250" y1="180" x2="350" y2="180" stroke="#666" stroke-width="2" marker-end="url(#arrowhead-request)"/>
+  <text x="300" y="165" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Request (a, b)</text>
+
+  <!-- Arrows: Response -->
+  <line x1="450" y1="200" x2="550" y2="200" stroke="#457b9d" stroke-width="2" marker-end="url(#arrowhead-response)"/>
+  <text x="500" y="215" font-family="Arial, sans-serif" font-size="12" fill="#457b9d" text-anchor="middle">Response (sum)</text>
+
+  <line x1="450" y1="180" x2="350" y2="180" stroke="#666" stroke-width="2" marker-start="url(#arrowhead-request)" opacity="0"/>
+  <line x1="350" y1="200" x2="450" y2="200" stroke="#457b9d" stroke-width="2" marker-start="url(#arrowhead-response)" opacity="0"/>
+
+</svg>
