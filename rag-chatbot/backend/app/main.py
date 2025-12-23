@@ -83,7 +83,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(health.router, tags=["System"])
-app.include_router(chatkit.router, tags=["ChatKit"])
+app.include_router(chatkit.router, prefix="/api", tags=["ChatKit"])
 app.include_router(sessions.router, prefix="/api", tags=["Sessions"])  # Frontend-compatible endpoints
 app.include_router(conversations.router, prefix="/api", tags=["Conversations"])
 app.include_router(index.router, prefix="/api", tags=["Indexing"])

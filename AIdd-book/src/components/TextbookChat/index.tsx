@@ -40,7 +40,7 @@ export default function TextbookChat({
   const { siteConfig } = useDocusaurusContext();
   const chatbotConfig = (siteConfig.customFields?.chatbot as any) || {};
   const baseUrl = getApiBaseUrl();
-  const finalApiUrl = apiUrl || `${chatbotConfig.apiUrl || baseUrl}/chatkit`;
+  const finalApiUrl = apiUrl || `${chatbotConfig.apiUrl || baseUrl}/api/chatkit`;
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);

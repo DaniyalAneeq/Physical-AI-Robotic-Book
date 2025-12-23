@@ -14,7 +14,7 @@ const config: Config = {
   // Custom fields for chatbot configuration
   customFields: {
     chatbot: {
-      apiUrl: process.env.CHATBOT_API_URL || 'https://e-book-physical-ai-humanoid-robotics.onrender.com/',
+      apiUrl: process.env.CHATBOT_API_URL || 'https://e-book-physical-ai-humanoid-robotics.onrender.com',
       enabled: process.env.CHATBOT_ENABLED !== 'false',
     },
   },
