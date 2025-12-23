@@ -6,13 +6,15 @@ import styles from './styles.module.css';
 // API configuration - determine base URL based on environment
 function getApiBaseUrl(): string {
   if (typeof window === 'undefined') {
-    return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
+    // Server-side rendering: use localhost for development
+    return 'http://localhost:8000';
   }
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
+    // Local development: use local backend
+    return 'http://localhost:8000';
   }
-  // Production: Use deployed backend URL
+  // Production (GitHub Pages): use deployed backend
   return process.env.REACT_APP_API_URL || 'https://e-book-physical-ai-humanoid-robotics.onrender.com';
 }
 
